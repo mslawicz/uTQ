@@ -76,6 +76,7 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
     pTimerHtim = &htim5;    /*htim5 used by Timer class*/
+    pHadc = &hadc1;         /*pointer to hadc1, which will be used in main loop*/
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -204,7 +205,7 @@ static void MX_ADC1_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_0;
   sConfig.Rank = 1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_15CYCLES;
+  sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();

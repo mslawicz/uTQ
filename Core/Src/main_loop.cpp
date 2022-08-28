@@ -15,17 +15,20 @@
 #include "logger.h"
 //XXX #include "monitor.h"
 
-//XXX ADC_HandleTypeDef* pHadc;    //pointer to ADC object
-//XXX uint16_t adcConvBuffer[MAX_ADC_CH]; //buffer for ADC conversion results
+ADC_HandleTypeDef* pHadc;    //pointer to ADC object
+uint16_t adcConvBuffer[MAX_ADC_CH]; //buffer for ADC conversion results
+bool adcDataReady = true;
 
 #ifdef MONITOR
 #endif
 
 void mainLoop()
 {
-    constexpr uint32_t HeartbeatPeriod = 500000;
+    constexpr uint32_t HeartbeatPeriod = 500000U;
+    constexpr uint32_t AdcPeriod = 1000U;
     Timer statusLedTimer;
     Timer gameCtrlTimer;
+    Timer adcTimer;
 
     LOG_ALWAYS("uTQ v1.0");
 
@@ -40,10 +43,17 @@ void mainLoop()
     /* main forever loop */
     while(true)
     {
-#ifdef MONITOR
-#endif
-        /* request next conversions of analog channels */
-        //XXX HAL_ADC_Start_DMA(pHadc, (uint32_t*)adcConvBuffer, pHadc->Init.NbrOfConversion);
+        if(adcDataReady && adcTimer.hasElapsed(AdcPeriod))
+        {
+            adcDataReady = false;
+
+            //filter ADC data here
+
+            /* request next conversions of analog channels */
+            HAL_ADC_Start_DMA(pHadc, (uint32_t*)adcConvBuffer, pHadc->Init.NbrOfConversion);
+
+            adcTimer.reset();
+        }
 
         if(statusLedTimer.hasElapsed(HeartbeatPeriod))
         {
@@ -57,6 +67,21 @@ void mainLoop()
             gameCtrlTimer.reset();
         }
 
+    }
+}
+
+
+/**
+  * @brief  Regular conversion complete callback in non blocking mode
+  * @param  hadc pointer to a ADC_HandleTypeDef structure that contains
+  *         the configuration information for the specified ADC.
+  * @retval None
+  */
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+{
+    if(hadc == pHadc)
+    {
+        adcDataReady = true;
     }
 }
 

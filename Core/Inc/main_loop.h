@@ -16,7 +16,8 @@ enum AdcCh
     propeller,
     mixture,
     leftBrake,
-    rightBrake
+    rightBrake,
+    spare
 };
 
 #endif /* INC_MAIN_LOOP_H_ */
