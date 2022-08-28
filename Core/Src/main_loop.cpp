@@ -9,7 +9,7 @@
 #include "main_loop_api.h"
 #include "main_loop.h"
 #include "timer.h"
-//XXX #include "pc_link.h"
+#include "pc_link.h"
 //XXX #include "convert.h"
 //XXX #include "constant.h"
 #include "logger.h"
@@ -33,7 +33,7 @@ void mainLoop()
     GPIO_TypeDef* heartbeatLedPort = LD2_GPIO_Port; //green LED
     uint16_t heartbeatLedPin = LD2_Pin;
 
-    //XXX GameController gameController;  //USB link-to-PC object (class custom HID - joystick)
+    GameController gameController;  //USB link-to-PC object (class custom HID - joystick)
 
     Timer::start(pTimerHtim);
 
@@ -51,11 +51,11 @@ void mainLoop()
             statusLedTimer.reset();
         }
 
-//        if(gameCtrlTimer.hasElapsed(GameController::ReportInterval))
-//        {
-//            gameController.sendReport();
-//            gameCtrlTimer.reset();
-//        }
+        if(gameCtrlTimer.hasElapsed(GameController::ReportInterval))
+        {
+            gameController.sendReport();
+            gameCtrlTimer.reset();
+        }
 
     }
 }
