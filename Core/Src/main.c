@@ -22,7 +22,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "main_loop_api.h"
+//XXX #include "stdio_redirection.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -69,7 +70,7 @@ static void MX_TIM5_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+    pTimerHtim = &htim5;    /*htim5 used by Timer class*/
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -99,10 +100,10 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  mainLoop();   /*it never returns from this function*/
+
   while (1)
   {
-      HAL_Delay(500);
-      HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
