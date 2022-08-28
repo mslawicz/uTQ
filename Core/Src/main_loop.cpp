@@ -12,7 +12,7 @@
 //XXX #include "pc_link.h"
 //XXX #include "convert.h"
 //XXX #include "constant.h"
-//XXX #include "logger.h"
+#include "logger.h"
 //XXX #include "monitor.h"
 
 //XXX ADC_HandleTypeDef* pHadc;    //pointer to ADC object
@@ -27,7 +27,7 @@ void mainLoop()
     Timer statusLedTimer;
     Timer gameCtrlTimer;
 
-    //XXX     LOG_ALWAYS("Wristbreaker v1.0");
+    LOG_ALWAYS("uTQ v1.0");
 
     //assign system LEDs
     GPIO_TypeDef* heartbeatLedPort = LD2_GPIO_Port; //green LED

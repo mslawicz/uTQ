@@ -23,7 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "main_loop_api.h"
-//XXX #include "stdio_redirection.h"
+#include "stdio_redirection.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -95,7 +95,7 @@ int main(void)
   MX_TIM5_Init();
   MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
-
+  redirectStdio(&huart2);     /*redirect stdio to console UART*/
   /* USER CODE END 2 */
 
   /* Infinite loop */
