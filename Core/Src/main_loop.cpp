@@ -13,13 +13,14 @@
 //XXX #include "convert.h"
 //XXX #include "constant.h"
 #include "logger.h"
-//XXX #include "monitor.h"
+#include "monitor.h"
 
 ADC_HandleTypeDef* pHadc;    //pointer to ADC object
 uint16_t adcConvBuffer[MAX_ADC_CH]; //buffer for ADC conversion results
 bool adcDataReady = true;
 
 #ifdef MONITOR
+uint16_t mon_adc[MAX_ADC_CH];
 #endif
 
 void mainLoop()
@@ -46,6 +47,10 @@ void mainLoop()
         if(adcDataReady && adcTimer.hasElapsed(AdcPeriod))
         {
             adcDataReady = false;
+
+#ifdef MONITOR
+            memcpy(mon_adc, adcConvBuffer, MAX_ADC_CH);
+#endif //MONITOR
 
             //filter ADC data here
 
