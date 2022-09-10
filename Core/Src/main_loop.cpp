@@ -22,6 +22,7 @@ bool adcDataReady = true;
 
 #ifdef MONITOR
 uint16_t mon_adc[MAX_ADC_CH];
+GameControllerDataType mon_joy_data;
 #endif
 
 void mainLoop()
@@ -78,6 +79,10 @@ void mainLoop()
 
             gameController.sendReport();
             gameCtrlTimer.reset();
+
+#ifdef MONITOR
+            mon_joy_data.slider = gameController.data.slider;
+#endif  //MONITOR
         }
 
     }

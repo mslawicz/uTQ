@@ -11,7 +11,7 @@
 #include "stm32f4xx_hal.h"
 #include "usbd_custom_hid_if.h"
 
-#define GAME_CONTROLLER_TEST
+//#define GAME_CONTROLLER_TEST
 
 struct GameControllerDataType
 {
