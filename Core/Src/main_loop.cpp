@@ -10,10 +10,11 @@
 #include "main_loop.h"
 #include "timer.h"
 #include "pc_link.h"
-//XXX #include "convert.h"
-//XXX #include "constant.h"
+#include "convert.h"
+#include "constant.h"
 #include "logger.h"
 #include "monitor.h"
+#include "median_filter.h"
 
 ADC_HandleTypeDef* pHadc;    //pointer to ADC object
 uint16_t adcConvBuffer[MAX_ADC_CH]; //buffer for ADC conversion results
@@ -26,7 +27,8 @@ uint16_t mon_adc[MAX_ADC_CH];
 void mainLoop()
 {
     constexpr uint32_t HeartbeatPeriod = 500000U;
-    constexpr uint32_t AdcPeriod = 1000U;
+    constexpr size_t AdcMedianFilterSize = 7;
+    constexpr uint32_t AdcPeriod = GameController::ReportInterval / AdcMedianFilterSize;
     Timer statusLedTimer;
     Timer gameCtrlTimer;
     Timer adcTimer;
@@ -38,6 +40,9 @@ void mainLoop()
     uint16_t heartbeatLedPin = LD2_Pin;
 
     GameController gameController;  //USB link-to-PC object (class custom HID - joystick)
+
+    //ADC filter objects
+    MedianFilter<uint16_t> throttleFilter(AdcMedianFilterSize);
 
     Timer::start(pTimerHtim);
 
@@ -52,7 +57,8 @@ void mainLoop()
             memcpy(mon_adc, adcConvBuffer, MAX_ADC_CH);
 #endif //MONITOR
 
-            //filter ADC data here
+            //filter ADC data
+            throttleFilter.filter(adcConvBuffer[AdcCh::throttle]);
 
             /* request next conversions of analog channels */
             HAL_ADC_Start_DMA(pHadc, (uint32_t*)adcConvBuffer, pHadc->Init.NbrOfConversion);
@@ -68,6 +74,8 @@ void mainLoop()
 
         if(gameCtrlTimer.hasElapsed(GameController::ReportInterval))
         {
+            gameController.data.slider = scale<uint16_t, uint16_t>(0, Max12Bit, throttleFilter.getMedian(), 0, Max15Bit);
+
             gameController.sendReport();
             gameCtrlTimer.reset();
         }
