@@ -19,7 +19,6 @@
 ADC_HandleTypeDef* pHadc;    //pointer to ADC object
 uint16_t adcConvBuffer[MAX_ADC_CH]; //buffer for ADC conversion results
 bool adcDataReady = true;
-bool reverseOn = false;     //state of thrust reverser
 
 #ifdef MONITOR
 uint16_t mon_adc[MAX_ADC_CH];
@@ -31,6 +30,8 @@ void mainLoop()
     constexpr uint32_t HeartbeatPeriod = 500000U;
     constexpr size_t AdcMedianFilterSize = 7;
     constexpr uint32_t AdcPeriod = GameController::ReportInterval / AdcMedianFilterSize;
+    bool reverseOn = false;     //state of thrust reverser
+    bool reverseOffArmed = false;    //automatic reverse off flag
     Timer statusLedTimer;
     Timer gameCtrlTimer;
     Timer adcTimer;
@@ -61,7 +62,7 @@ void mainLoop()
 #endif //MONITOR
 
             //filter ADC data
-            throttleFilter.filter(adcConvBuffer[AdcCh::throttle]);
+            throttleFilter.filter(Max12Bit - adcConvBuffer[AdcCh::throttle]);
 
             /* request next conversions of analog channels */
             HAL_ADC_Start_DMA(pHadc, (uint32_t*)adcConvBuffer, pHadc->Init.NbrOfConversion);
@@ -76,6 +77,28 @@ void mainLoop()
             statusLedTimer.reset();
         }
 
+        //process thrust reverser button
+        //activate reverser on button press when throttle is idle
+        //deactivate reverser automatically when throttle is idle again
+        if((reverseOn == false) &&      //reverser is off
+           (HAL_GPIO_ReadPin(PB_REVERS_GPIO_Port, PB_REVERS_Pin) == GPIO_PinState::GPIO_PIN_RESET) &&       //reverse button is pressed
+           (throttleFilter.getMedian() < ADC10Pct))     //throttle is < 10%
+        {
+            reverseOn = true;
+            reverseOffArmed = false;
+        }
+        if((reverseOn == true) &&   //reverser is on
+           (throttleFilter.getMedian() > ADC20Pct))     //throttle > 20%
+        {
+            reverseOffArmed = true;
+        }
+        if((reverseOffArmed == true) &&     //reverser auto off is armed
+           (throttleFilter.getMedian() < ADC10Pct))     //throttle < 10%
+        {
+            reverseOn = false;
+            reverseOffArmed = false;
+        }
+
         //process USB reports
         if(gameCtrlTimer.hasElapsed(GameController::ReportInterval))
         {
@@ -83,7 +106,7 @@ void mainLoop()
             gameController.data.slider = scale<uint16_t, uint16_t>(0, Max12Bit, throttleFilter.getMedian(), 0, Max15Bit);
 
             //set game controller buttons
-            gameController.setButton(GameControllerButton::reverser, HAL_GPIO_ReadPin(PB_REVERS_GPIO_Port, PB_REVERS_Pin));
+            gameController.setButton(GameControllerButton::reverser, reverseOn);
 
             gameController.sendReport();
             gameCtrlTimer.reset();

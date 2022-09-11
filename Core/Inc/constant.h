@@ -14,5 +14,7 @@ constexpr uint16_t Max12Bit = 0x0FFF;
 constexpr uint16_t Max14Bit = 0x3FFF;
 constexpr uint16_t Max15Bit = 0x7FFF;
 constexpr uint16_t Max16Bit = 0xFFFF;
+constexpr uint16_t ADC10Pct = 0x0199;
+constexpr uint16_t ADC20Pct = 0x0333;
 
 #endif /* INC_CONSTANT_H_ */
