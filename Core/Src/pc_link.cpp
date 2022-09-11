@@ -55,3 +55,15 @@ void GameController::setTestData()
     uint8_t pattern = 1 << (_testCounter >> 5);
     data.buttons = pattern | (pattern << 8) | (pattern << 16) | (pattern << 24); // @suppress("Avoid magic numbers")
 }
+
+void GameController::setButton(GameControllerButton button, bool state)
+{
+    if(state)
+    {
+        data.buttons |= (1 << static_cast<uint8_t>(button));
+    }
+    else
+    {
+        data.buttons &= ~(1 << static_cast<uint8_t>(button));
+    }
+}

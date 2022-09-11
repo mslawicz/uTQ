@@ -27,10 +27,16 @@ struct GameControllerDataType
     uint32_t buttons;
 };
 
+enum class GameControllerButton : uint8_t
+{
+    reverser
+};
+
 class GameController
 {
 public:
     void sendReport();
+    void setButton(GameControllerButton button, bool state);
     GameControllerDataType data;
     static constexpr uint32_t ReportInterval = 10000U;    //game controller report sending interval
 private:

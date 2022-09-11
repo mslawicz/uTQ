@@ -19,6 +19,7 @@
 ADC_HandleTypeDef* pHadc;    //pointer to ADC object
 uint16_t adcConvBuffer[MAX_ADC_CH]; //buffer for ADC conversion results
 bool adcDataReady = true;
+bool reverseOn = false;     //state of thrust reverser
 
 #ifdef MONITOR
 uint16_t mon_adc[MAX_ADC_CH];
@@ -34,7 +35,7 @@ void mainLoop()
     Timer gameCtrlTimer;
     Timer adcTimer;
 
-    LOG_ALWAYS("uTQ v1.0");
+    LOG_ALWAYS("micro TQ v1.0");
 
     //assign system LEDs
     GPIO_TypeDef* heartbeatLedPort = LD2_GPIO_Port; //green LED
@@ -50,6 +51,7 @@ void mainLoop()
     /* main forever loop */
     while(true)
     {
+        //process ADC conversions
         if(adcDataReady && adcTimer.hasElapsed(AdcPeriod))
         {
             adcDataReady = false;
@@ -67,15 +69,21 @@ void mainLoop()
             adcTimer.reset();
         }
 
+        //process heartbeat LED
         if(statusLedTimer.hasElapsed(HeartbeatPeriod))
         {
             HAL_GPIO_TogglePin(heartbeatLedPort, heartbeatLedPin);
             statusLedTimer.reset();
         }
 
+        //process USB reports
         if(gameCtrlTimer.hasElapsed(GameController::ReportInterval))
         {
+            //set game controller axes
             gameController.data.slider = scale<uint16_t, uint16_t>(0, Max12Bit, throttleFilter.getMedian(), 0, Max15Bit);
+
+            //set game controller buttons
+            gameController.setButton(GameControllerButton::reverser, HAL_GPIO_ReadPin(PB_REVERS_GPIO_Port, PB_REVERS_Pin));
 
             gameController.sendReport();
             gameCtrlTimer.reset();
