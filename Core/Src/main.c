@@ -379,11 +379,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PB_REVERS_Pin */
-  GPIO_InitStruct.Pin = PB_REVERS_Pin;
+  /*Configure GPIO pins : PB_RED_Pin FLAPS_DOWN_Pin */
+  GPIO_InitStruct.Pin = PB_RED_Pin|FLAPS_DOWN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(PB_REVERS_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LD2_Pin */
   GPIO_InitStruct.Pin = LD2_Pin;
@@ -391,6 +391,20 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : TOGGLE_RIGHT_Pin GEAR_DOWN_Pin GEAR_UP_Pin PB_GREEN_Pin
+                           TOGGLE_LEFT_Pin PB_BLUE_Pin */
+  GPIO_InitStruct.Pin = TOGGLE_RIGHT_Pin|GEAR_DOWN_Pin|GEAR_UP_Pin|PB_GREEN_Pin
+                          |TOGGLE_LEFT_Pin|PB_BLUE_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : FLAPS_UP_Pin */
+  GPIO_InitStruct.Pin = FLAPS_UP_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(FLAPS_UP_GPIO_Port, &GPIO_InitStruct);
 
 }
 

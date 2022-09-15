@@ -29,7 +29,13 @@ struct GameControllerDataType
 
 enum class GameControllerButton : uint8_t
 {
-    reverser
+    reverser,
+    flapsUp,
+    flapsDown,
+    gearUp,
+    gearDown,
+    blueButton,
+    greenButton
 };
 
 class GameController

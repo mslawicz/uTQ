@@ -85,7 +85,7 @@ void mainLoop()
         //activate reverser on button press when throttle is idle
         //deactivate reverser automatically when throttle is idle again
         if((reverseOn == false) &&      //reverser is off
-           (HAL_GPIO_ReadPin(PB_REVERS_GPIO_Port, PB_REVERS_Pin) == GPIO_PinState::GPIO_PIN_RESET) &&       //reverse button is pressed
+           (HAL_GPIO_ReadPin(PB_RED_GPIO_Port, PB_RED_Pin) == GPIO_PinState::GPIO_PIN_RESET) &&       //reverse button is pressed
            (throttleFilter.getMedian() < ADC10Pct))     //throttle is < 10%
         {
             reverseOn = true;
@@ -113,6 +113,12 @@ void mainLoop()
 
             //set game controller buttons
             gameController.setButton(GameControllerButton::reverser, reverseOn);
+            gameController.setButton(GameControllerButton::flapsUp, HAL_GPIO_ReadPin(FLAPS_UP_GPIO_Port, FLAPS_UP_Pin) == GPIO_PinState::GPIO_PIN_RESET);
+            gameController.setButton(GameControllerButton::flapsDown, HAL_GPIO_ReadPin(FLAPS_DOWN_GPIO_Port, FLAPS_DOWN_Pin) == GPIO_PinState::GPIO_PIN_RESET);
+            gameController.setButton(GameControllerButton::gearUp, HAL_GPIO_ReadPin(GEAR_UP_GPIO_Port, GEAR_UP_Pin) == GPIO_PinState::GPIO_PIN_RESET);
+            gameController.setButton(GameControllerButton::gearDown, HAL_GPIO_ReadPin(GEAR_DOWN_GPIO_Port, GEAR_DOWN_Pin) == GPIO_PinState::GPIO_PIN_RESET);
+            gameController.setButton(GameControllerButton::blueButton, HAL_GPIO_ReadPin(PB_BLUE_GPIO_Port, PB_BLUE_Pin) == GPIO_PinState::GPIO_PIN_RESET);
+            gameController.setButton(GameControllerButton::greenButton, HAL_GPIO_ReadPin(PB_GREEN_GPIO_Port, PB_GREEN_Pin) == GPIO_PinState::GPIO_PIN_RESET);
 
             gameController.sendReport();
             gameCtrlTimer.reset();

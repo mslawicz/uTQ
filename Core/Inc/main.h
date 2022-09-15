@@ -61,20 +61,36 @@ void Error_Handler(void);
 #define CUSTOM_HID_EPOUT_SIZE 64
 #define B1_Pin GPIO_PIN_13
 #define B1_GPIO_Port GPIOC
-#define PB_REVERS_Pin GPIO_PIN_0
-#define PB_REVERS_GPIO_Port GPIOC
+#define PB_RED_Pin GPIO_PIN_0
+#define PB_RED_GPIO_Port GPIOC
 #define USART_TX_Pin GPIO_PIN_2
 #define USART_TX_GPIO_Port GPIOA
 #define USART_RX_Pin GPIO_PIN_3
 #define USART_RX_GPIO_Port GPIOA
 #define LD2_Pin GPIO_PIN_5
 #define LD2_GPIO_Port GPIOA
+#define FLAPS_DOWN_Pin GPIO_PIN_4
+#define FLAPS_DOWN_GPIO_Port GPIOC
+#define TOGGLE_RIGHT_Pin GPIO_PIN_1
+#define TOGGLE_RIGHT_GPIO_Port GPIOB
+#define GEAR_DOWN_Pin GPIO_PIN_13
+#define GEAR_DOWN_GPIO_Port GPIOB
+#define GEAR_UP_Pin GPIO_PIN_14
+#define GEAR_UP_GPIO_Port GPIOB
+#define PB_GREEN_Pin GPIO_PIN_15
+#define PB_GREEN_GPIO_Port GPIOB
+#define FLAPS_UP_Pin GPIO_PIN_10
+#define FLAPS_UP_GPIO_Port GPIOA
 #define TMS_Pin GPIO_PIN_13
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
 #define TCK_GPIO_Port GPIOA
 #define SWO_Pin GPIO_PIN_3
 #define SWO_GPIO_Port GPIOB
+#define TOGGLE_LEFT_Pin GPIO_PIN_4
+#define TOGGLE_LEFT_GPIO_Port GPIOB
+#define PB_BLUE_Pin GPIO_PIN_5
+#define PB_BLUE_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
