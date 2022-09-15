@@ -46,6 +46,8 @@ void mainLoop()
 
     //ADC filter objects
     MedianFilter<uint16_t> throttleFilter(AdcMedianFilterSize);
+    MedianFilter<uint16_t> propellerFilter(AdcMedianFilterSize);
+    MedianFilter<uint16_t> mixtureFilter(AdcMedianFilterSize);
 
     Timer::start(pTimerHtim);
 
@@ -63,6 +65,8 @@ void mainLoop()
 
             //filter ADC data
             throttleFilter.filter(Max12Bit - adcConvBuffer[AdcCh::throttle]);
+            propellerFilter.filter(adcConvBuffer[AdcCh::propeller]);
+            mixtureFilter.filter(adcConvBuffer[AdcCh::mixture]);
 
             /* request next conversions of analog channels */
             HAL_ADC_Start_DMA(pHadc, (uint32_t*)adcConvBuffer, pHadc->Init.NbrOfConversion);
@@ -104,6 +108,8 @@ void mainLoop()
         {
             //set game controller axes
             gameController.data.slider = scale<uint16_t, uint16_t>(0, Max12Bit, throttleFilter.getMedian(), 0, Max15Bit);
+            gameController.data.dial = scale<uint16_t, uint16_t>(0, Max12Bit, propellerFilter.getMedian(), 0, Max15Bit);
+            gameController.data.Z = scale<uint16_t, int16_t>(0, Max12Bit, mixtureFilter.getMedian(), -Max15Bit, Max15Bit);
 
             //set game controller buttons
             gameController.setButton(GameControllerButton::reverser, reverseOn);
