@@ -35,7 +35,9 @@ enum class GameControllerButton : uint8_t
     gearUp,
     gearDown,
     blueButton,
-    greenButton
+    greenButton,
+    leftToggle,
+    rightToggle
 };
 
 class GameController
