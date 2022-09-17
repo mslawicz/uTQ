@@ -414,10 +414,13 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, LD2_Pin|DIS_RESET_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(DIS_CS_GPIO_Port, DIS_CS_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(DIS_RESET_GPIO_Port, DIS_RESET_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(DIS_DC_GPIO_Port, DIS_DC_Pin, GPIO_PIN_RESET);
@@ -428,14 +431,16 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PB_RED_Pin FLAPS_DOWN_Pin */
-  GPIO_InitStruct.Pin = PB_RED_Pin|FLAPS_DOWN_Pin;
+  /*Configure GPIO pins : PB_RED_Pin ENC_CLK_Pin ENC_DT_Pin ENC_SW_Pin
+                           FLAPS_DOWN_Pin */
+  GPIO_InitStruct.Pin = PB_RED_Pin|ENC_CLK_Pin|ENC_DT_Pin|ENC_SW_Pin
+                          |FLAPS_DOWN_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LD2_Pin DIS_RESET_Pin */
-  GPIO_InitStruct.Pin = LD2_Pin|DIS_RESET_Pin;
+  /*Configure GPIO pins : LD2_Pin DIS_CS_Pin */
+  GPIO_InitStruct.Pin = LD2_Pin|DIS_CS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -455,12 +460,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(FLAPS_UP_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : DIS_CS_Pin */
-  GPIO_InitStruct.Pin = DIS_CS_Pin;
+  /*Configure GPIO pin : DIS_RESET_Pin */
+  GPIO_InitStruct.Pin = DIS_RESET_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(DIS_CS_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(DIS_RESET_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : DIS_DC_Pin */
   GPIO_InitStruct.Pin = DIS_DC_Pin;
