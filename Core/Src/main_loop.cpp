@@ -15,6 +15,7 @@
 #include "logger.h"
 #include "monitor.h"
 #include "median_filter.h"
+#include "sh1106.h"
 
 ADC_HandleTypeDef* pHadc;    //pointer to ADC object
 uint16_t adcConvBuffer[MAX_ADC_CH]; //buffer for ADC conversion results
@@ -43,6 +44,8 @@ void mainLoop()
     uint16_t heartbeatLedPin = LD2_Pin;
 
     GameController gameController;  //USB link-to-PC object (class custom HID - joystick)
+
+    SH1106 display(DIS_RESET_GPIO_Port, DIS_RESET_Pin);     //OLED display
 
     //ADC filter objects
     MedianFilter<uint16_t> throttleFilter(AdcMedianFilterSize);
@@ -130,6 +133,8 @@ void mainLoop()
 #endif  //MONITOR
         }
 
+        //handle display actions
+        display.handler();
     }
 }
 
