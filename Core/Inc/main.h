@@ -85,6 +85,12 @@ void Error_Handler(void);
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
 #define TCK_GPIO_Port GPIOA
+#define DIS_RESET_Pin GPIO_PIN_15
+#define DIS_RESET_GPIO_Port GPIOA
+#define DIS_CS_Pin GPIO_PIN_11
+#define DIS_CS_GPIO_Port GPIOC
+#define DIS_DC_Pin GPIO_PIN_2
+#define DIS_DC_GPIO_Port GPIOD
 #define SWO_Pin GPIO_PIN_3
 #define SWO_GPIO_Port GPIOB
 #define TOGGLE_LEFT_Pin GPIO_PIN_4
