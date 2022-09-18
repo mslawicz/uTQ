@@ -18,6 +18,7 @@
 #include "sh1106.h"
 
 ADC_HandleTypeDef* pHadc;    //pointer to ADC object
+SPI_HandleTypeDef* pHspi3;   //pointer to SPI3 object
 uint16_t adcConvBuffer[MAX_ADC_CH]; //buffer for ADC conversion results
 bool adcDataReady = true;
 
@@ -45,7 +46,7 @@ void mainLoop()
 
     GameController gameController;  //USB link-to-PC object (class custom HID - joystick)
 
-    SH1106 display(DIS_RESET_GPIO_Port, DIS_RESET_Pin);     //OLED display
+    SH1106 display(pHspi3, DIS_CS_GPIO_Port, DIS_CS_Pin, DIS_DC_GPIO_Port, DIS_DC_Pin, DIS_RESET_GPIO_Port, DIS_RESET_Pin);     //OLED display
 
     //ADC filter objects
     MedianFilter<uint16_t> throttleFilter(AdcMedianFilterSize);

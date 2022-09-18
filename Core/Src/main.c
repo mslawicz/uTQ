@@ -80,6 +80,7 @@ int main(void)
   /* USER CODE BEGIN 1 */
     pTimerHtim = &htim5;    /*htim5 used by Timer class*/
     pHadc = &hadc1;         /*pointer to hadc1, which will be used in main loop*/
+    pHspi3 = &hspi3;        /*pointer to hspi3, which is used for display*/
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
