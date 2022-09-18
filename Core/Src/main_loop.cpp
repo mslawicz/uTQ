@@ -21,6 +21,7 @@ ADC_HandleTypeDef* pHadc;    //pointer to ADC object
 SPI_HandleTypeDef* pHspi3;   //pointer to SPI3 object
 uint16_t adcConvBuffer[MAX_ADC_CH]; //buffer for ADC conversion results
 bool adcDataReady = true;
+SH1106* pDisplay = nullptr;
 
 #ifdef MONITOR
 uint16_t mon_adc[MAX_ADC_CH];
@@ -47,6 +48,7 @@ void mainLoop()
     GameController gameController;  //USB link-to-PC object (class custom HID - joystick)
 
     SH1106 display(pHspi3, DIS_CS_GPIO_Port, DIS_CS_Pin, DIS_DC_GPIO_Port, DIS_DC_Pin, DIS_RESET_GPIO_Port, DIS_RESET_Pin);     //OLED display
+    pDisplay = &display;
 
     //ADC filter objects
     MedianFilter<uint16_t> throttleFilter(AdcMedianFilterSize);
@@ -154,3 +156,19 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     }
 }
 
+/**
+  * @brief  Tx Transfer completed callback.
+  * @param  hspi pointer to a SPI_HandleTypeDef structure that contains
+  *               the configuration information for SPI module.
+  * @retval None
+  */
+void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
+{
+    if(hspi == pHspi3)
+    {
+        if(pDisplay != nullptr)
+        {
+            pDisplay->freeSPI();
+        }
+    }
+}

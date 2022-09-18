@@ -11,16 +11,15 @@
 #include "stm32f4xx_hal.h"
 #include "timer.h"
 #include <vector>
+#include <array>
 
 enum class SH1106State : uint8_t
 {
     start,
     resetOff,
     setUp,
-    clearScreen,
-    displayOn,
-    waitAfterInit,
-    waitForData
+    clearData,
+    refresh
 };
 
 enum class SH1106Control : uint8_t
@@ -38,6 +37,7 @@ public:
            GPIO_TypeDef* resetPort, uint16_t resetPin);
     void handler();
     void write(SH1106Control controlPad, uint8_t* buffer, uint16_t length);
+    void freeSPI();
 private:
     SH1106State _state{SH1106State::start};
     Timer _timer;
@@ -63,6 +63,17 @@ private:
         0xC8    //scan from N-1 to 0
     };
     bool _busy{false};       //indicate SPI is busy
+    static constexpr size_t NoOfPages = 8;
+    static constexpr size_t NoOfRows = 128;
+    struct SH1106Page
+    {
+        uint8_t refreshFrom;
+        uint8_t refreshTo;
+        std::array<uint8_t, NoOfRows> buffer;
+    };
+    std::array<SH1106Page, NoOfPages> displayData;
+    bool _refreshRequest{false};
+    bool _displayOn{false};
 };
 
 
