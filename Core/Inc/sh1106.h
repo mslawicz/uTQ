@@ -19,7 +19,8 @@ enum class SH1106State : uint8_t
     resetOff,
     setUp,
     clearData,
-    refresh
+    sendAddr,
+    sendData
 };
 
 enum class SH1106Control : uint8_t
@@ -74,6 +75,7 @@ private:
     std::array<SH1106Page, NoOfPages> displayData;
     bool _refreshRequest{false};
     bool _displayOn{false};
+    uint8_t _pageNo{0};
 };
 
 
