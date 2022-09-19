@@ -77,10 +77,11 @@ void SH1106::handler()
                    (displayData[_pageNo].refreshFrom <= displayData[_pageNo].refreshTo))
                 {
                     //this page must be refreshed
+                    uint8_t startColumn = displayData[_pageNo].refreshFrom + 2;
                     std::vector<uint8_t> addrData =     //display memory address
                     {
-                            static_cast<uint8_t>(displayData[_pageNo].refreshFrom & 0x0F),  //lower column value
-                            static_cast<uint8_t>(0x10 | ((displayData[_pageNo].refreshFrom >> 4)& 0x0F)),   //higher column value
+                            static_cast<uint8_t>(startColumn & 0x0F),  //lower column value
+                            static_cast<uint8_t>(0x10 | ((startColumn >> 4)& 0x0F)),   //higher column value
                             static_cast<uint8_t>(0xB0 | _pageNo)    //page value
                     };
                     write(SH1106Control::command, addrData.data(), addrData.size());
