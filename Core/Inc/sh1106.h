@@ -39,6 +39,7 @@ public:
     void handler();
     void write(SH1106Control controlPad, uint8_t* buffer, uint16_t length);
     void freeSPI();
+    void putDot(uint8_t x, uint8_t y, bool inverse = false);
 private:
     SH1106State _state{SH1106State::start};
     Timer _timer;
@@ -66,6 +67,8 @@ private:
     bool _busy{false};       //indicate SPI is busy
     static constexpr size_t NoOfPages = 8;
     static constexpr size_t NoOfRows = 128;
+    static constexpr size_t MaxX = NoOfRows;
+    static constexpr size_t MaxY = 62;
     struct SH1106Page
     {
         uint8_t refreshFrom;

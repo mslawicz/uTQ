@@ -56,6 +56,8 @@ void SH1106::handler()
             page.refreshFrom = 0;
             page.refreshTo = NoOfRows - 1;
             _refreshRequest = true;     //display must be refreshed with cleared data
+            //XXX test
+            page.buffer[120] = 0x0F;
         }
         _state = SH1106State::sendAddr;
         break;
@@ -72,9 +74,7 @@ void SH1106::handler()
             _pageNo = 0;
             while(_pageNo < NoOfPages)
             {
-                if((displayData[_pageNo].refreshFrom < NoOfRows) &&
-                   (displayData[_pageNo].refreshTo < NoOfRows) &&
-                   (displayData[_pageNo].refreshFrom <= displayData[_pageNo].refreshTo))
+                if(displayData[_pageNo].refreshFrom <= displayData[_pageNo].refreshTo)
                 {
                     //this page must be refreshed
                     uint8_t startColumn = displayData[_pageNo].refreshFrom + 2;
@@ -114,7 +114,8 @@ void SH1106::handler()
 
         //send display data to the display chip
         write(SH1106Control::data, &displayData[_pageNo].buffer[displayData[_pageNo].refreshFrom], displayData[_pageNo].refreshTo - displayData[_pageNo].refreshFrom +1);
-        displayData[_pageNo].refreshFrom = displayData[_pageNo].refreshTo = NoOfRows;   //mark that this page is up to date
+        displayData[_pageNo].refreshFrom = NoOfRows;   //mark that this page is up to date
+        displayData[_pageNo].refreshTo = 0;
         _state = SH1106State::sendAddr;
         break;
 
@@ -125,15 +126,13 @@ void SH1106::handler()
 
 void SH1106::write(SH1106Control controlPad, uint8_t *buffer, uint16_t length)
 {
+    _busy = true;
     HAL_GPIO_WritePin(_dcPort, _dcPin, static_cast<GPIO_PinState>(controlPad));
     HAL_GPIO_WritePin(_csPort, _csPin, GPIO_PinState::GPIO_PIN_RESET);      //CS active; to be released in interrupt
-    if(HAL_SPI_Transmit_IT(_pSPI, buffer, length) == HAL_OK)
-    {
-        _busy = true;
-    }
-    else
+    if(HAL_SPI_Transmit_IT(_pSPI, buffer, length) != HAL_OK)
     {
         HAL_GPIO_WritePin(_csPort, _csPin, GPIO_PinState::GPIO_PIN_SET);      //release CS upon unsuccessful transmission
+        _busy = false;
     }
 }
 
@@ -141,4 +140,32 @@ void SH1106::freeSPI()
 {
     HAL_GPIO_WritePin(_csPort, _csPin, GPIO_PinState::GPIO_PIN_SET);    //CS pin not active
     _busy = false;
+}
+
+void SH1106::putDot(uint8_t x, uint8_t y, bool inverse)
+{
+    if((x < MaxX) && (y < MaxY))
+    {
+        constexpr uint8_t PageHight = 8;
+        uint8_t page = y / PageHight;
+        uint8_t bitPos = y % PageHight;
+        if(inverse)
+        {
+            displayData[page].buffer[x] &= ~(1 << bitPos);
+        }
+        else
+        {
+            displayData[page].buffer[x] |= (1 << bitPos);
+        }
+        if(x < displayData[page].refreshFrom)
+        {
+            displayData[page].refreshFrom = x;
+            _refreshRequest = true;
+        }
+        if(x > displayData[page].refreshTo)
+        {
+            displayData[page].refreshTo = x;
+            _refreshRequest = true;
+        }
+    }
 }
