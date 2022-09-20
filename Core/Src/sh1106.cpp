@@ -19,7 +19,8 @@ SH1106::SH1106(SPI_HandleTypeDef* pSPI,
     _resetPort(resetPort),
     _resetPin(resetPin)
 {
-
+    maxX = MaxX;
+    maxY = MaxY;
 }
 
 void SH1106::handler()
@@ -136,7 +137,7 @@ void SH1106::write(SH1106Control controlPad, uint8_t *buffer, uint16_t length)
     }
 }
 
-void SH1106::freeSPI()
+void SH1106::freeBus()
 {
     HAL_GPIO_WritePin(_csPort, _csPin, GPIO_PinState::GPIO_PIN_SET);    //CS pin not active
     _busy = false;
@@ -144,7 +145,7 @@ void SH1106::freeSPI()
 
 void SH1106::putDot(uint8_t x, uint8_t y, bool inverse)
 {
-    if((x < MaxX) && (y < MaxY))
+    if((x < maxX) && (y < maxY))
     {
         constexpr uint8_t PageHight = 8;
         uint8_t page = y / PageHight;

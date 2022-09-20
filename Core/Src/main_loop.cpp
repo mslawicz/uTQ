@@ -21,7 +21,7 @@ ADC_HandleTypeDef* pHadc;    //pointer to ADC object
 SPI_HandleTypeDef* pHspi3;   //pointer to SPI3 object
 uint16_t adcConvBuffer[MAX_ADC_CH]; //buffer for ADC conversion results
 bool adcDataReady = true;
-SH1106* pDisplay = nullptr;
+Display* pDisplay = nullptr;
 
 #ifdef MONITOR
 uint16_t mon_adc[MAX_ADC_CH];
@@ -47,8 +47,8 @@ void mainLoop()
 
     GameController gameController;  //USB link-to-PC object (class custom HID - joystick)
 
-    SH1106 display(pHspi3, DIS_CS_GPIO_Port, DIS_CS_Pin, DIS_DC_GPIO_Port, DIS_DC_Pin, DIS_RESET_GPIO_Port, DIS_RESET_Pin);     //OLED display
-    pDisplay = &display;
+    pDisplay = new SH1106(pHspi3, DIS_CS_GPIO_Port, DIS_CS_Pin, DIS_DC_GPIO_Port, DIS_DC_Pin, DIS_RESET_GPIO_Port, DIS_RESET_Pin);     //OLED display
+
 
     //ADC filter objects
     MedianFilter<uint16_t> throttleFilter(AdcMedianFilterSize);
@@ -88,7 +88,7 @@ void mainLoop()
 
             //XXX display test!!!
             static uint16_t pix = 0;
-            display.putDot(pix / 64, pix % 64);
+            pDisplay->putDot(pix / 64, pix % 64);
             pix++;
         }
 
@@ -142,7 +142,10 @@ void mainLoop()
         }
 
         //handle display actions
-        display.handler();
+        if(pDisplay != nullptr)
+        {
+            pDisplay->handler();
+        }
     }
 }
 
@@ -173,7 +176,7 @@ void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
     {
         if(pDisplay != nullptr)
         {
-            pDisplay->freeSPI();
+            pDisplay->freeBus();
         }
     }
 }

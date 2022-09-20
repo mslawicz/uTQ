@@ -10,6 +10,7 @@
 
 #include "stm32f4xx_hal.h"
 #include "timer.h"
+#include "display.h"
 #include <vector>
 #include <array>
 
@@ -29,18 +30,18 @@ enum class SH1106Control : uint8_t
     data
 };
 
-class SH1106
+class SH1106 : public Display
 {
 public:
     SH1106(SPI_HandleTypeDef* pSPI,
            GPIO_TypeDef* csPort, uint16_t csPin,
            GPIO_TypeDef* dcPort, uint16_t dcPin,
            GPIO_TypeDef* resetPort, uint16_t resetPin);
-    void handler();
-    void write(SH1106Control controlPad, uint8_t* buffer, uint16_t length);
-    void freeSPI();
-    void putDot(uint8_t x, uint8_t y, bool inverse = false);
+    void handler() override;
+    void freeBus() override;
+    void putDot(uint8_t x, uint8_t y, bool inverse = false) override;
 private:
+    void write(SH1106Control controlPad, uint8_t* buffer, uint16_t length);
     SH1106State _state{SH1106State::start};
     Timer _timer;
     SPI_HandleTypeDef* _pSPI;
