@@ -57,8 +57,6 @@ void SH1106::handler()
             page.refreshFrom = 0;
             page.refreshTo = NoOfRows - 1;
             _refreshRequest = true;     //display must be refreshed with cleared data
-            //XXX test
-            page.buffer[120] = 0x0F;
         }
         _state = SH1106State::sendAddr;
         break;

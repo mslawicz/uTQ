@@ -85,11 +85,6 @@ void mainLoop()
         {
             HAL_GPIO_TogglePin(heartbeatLedPort, heartbeatLedPin);
             statusLedTimer.reset();
-
-            //XXX display test!!!
-            static uint16_t pix = 0;
-            pDisplay->putDot(pix / 64, pix % 64);
-            pix++;
         }
 
         //process thrust reverser button
