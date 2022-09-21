@@ -38,6 +38,8 @@ void mainLoop()
     Timer statusLedTimer;
     Timer gameCtrlTimer;
     Timer adcTimer;
+    Timer testTimer;    //XXX test
+    testTimer.reset();
 
     LOG_ALWAYS("micro TQ v1.0");
 
@@ -140,6 +142,14 @@ void mainLoop()
         if(pDisplay != nullptr)
         {
             pDisplay->handler();
+        }
+
+        if(testTimer.hasElapsed(1000000))   //XXX test
+        {
+            pDisplay->putDot(120, 2);
+            pDisplay->putDot(122, 2);
+            pDisplay->putDot(120, 4);
+            pDisplay->putDot(122, 4);
         }
     }
 }
