@@ -17,6 +17,7 @@ public:
     virtual void handler() = 0;
     virtual void freeBus() {}
     virtual void putDot(uint8_t x, uint8_t y, bool inverse = false) = 0;
+    void putLine(uint8_t fromX, uint8_t fromY, uint8_t toX, uint8_t toY, bool inverse = false);
 protected:
     size_t maxX{0};
     size_t maxY{0};

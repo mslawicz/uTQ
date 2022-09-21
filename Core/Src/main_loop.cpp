@@ -146,10 +146,8 @@ void mainLoop()
 
         if(testTimer.hasElapsed(1000000))   //XXX test
         {
-            pDisplay->putDot(120, 2);
-            pDisplay->putDot(122, 2);
-            pDisplay->putDot(120, 4);
-            pDisplay->putDot(122, 4);
+            pDisplay->putLine(20, 10, 100, 50);
+            pDisplay->putLine(30, 50, 90, 10);
         }
     }
 }
