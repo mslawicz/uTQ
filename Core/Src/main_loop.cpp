@@ -16,6 +16,7 @@
 #include "monitor.h"
 #include "median_filter.h"
 #include "sh1106.h"
+#include "fonts/fonts.h"
 
 ADC_HandleTypeDef* pHadc;    //pointer to ADC object
 SPI_HandleTypeDef* pHspi3;   //pointer to SPI3 object
@@ -148,6 +149,9 @@ void mainLoop()
         {
             pDisplay->putLine(20, 10, 100, 50);
             pDisplay->putLine(30, 50, 90, 10);
+            pDisplay->putChar(2, 30, 'u', FontTahoma15);
+            pDisplay->putChar(11, 27, 'T', FontTahoma15);
+            pDisplay->putChar(20, 32, 'Q', FontTahoma15);
         }
     }
 }
