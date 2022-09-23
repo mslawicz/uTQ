@@ -39,11 +39,8 @@
 #ifndef ARIAL9_H
 #define ARIAL9_H
 
-#define ARIAL9_WIDTH 9
-#define ARIAL9_HEIGHT 9
-
 const uint8_t FontArial9[] = {
-        0x14, 0xB4, // size
+         0x14, 0xB4, // size
          0x03, // width
          0x09, // height
          0x20, // first char

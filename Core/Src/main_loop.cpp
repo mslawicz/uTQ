@@ -147,11 +147,10 @@ void mainLoop()
 
         if(testTimer.hasElapsed(1000000))   //XXX test
         {
-            pDisplay->putLine(20, 10, 100, 50);
-            pDisplay->putLine(30, 50, 90, 10);
-            pDisplay->putChar(2, 30, 'u', FontTahoma15);
-            pDisplay->putChar(11, 27, 'T', FontTahoma15);
-            pDisplay->putChar(20, 32, 'Q', FontTahoma15);
+            pDisplay->putText(0, 0, "Hello micro TQ", FontTahoma14b);
+            pDisplay->putText(30, 20, "FONT ALIEN 7", FontAlien7);
+            pDisplay->putText(0, 40, "ALIEN 14", FontAlien14);
+            testTimer.reset();
         }
     }
 }

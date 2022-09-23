@@ -42,7 +42,7 @@
 
 const uint8_t FontArial42d[] = {
     0x31, 0xA4, // size
-    0x1C, // width
+    0x10, // width
     0x2A, // height
     0x2A, // first char
     0x12, // char count

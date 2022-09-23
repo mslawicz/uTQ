@@ -50,15 +50,6 @@ void Display::putLine(uint8_t fromX, uint8_t fromY, uint8_t toX, uint8_t toY, bo
 uint8_t Display::putChar(uint8_t X, uint8_t Y,uint8_t ch, const uint8_t* font, bool inverse, uint8_t upToX)
 {
     constexpr uint8_t BitsInByte = 8;
-    enum FontField
-    {
-        FontSize = 0,
-        FontWidth = 2,
-        FontHeight = 3,
-        FontStart = 4,
-        FontCount = 5,
-        FontWidthDef = 6
-    };
     bool isSpace = false;
 
     if((ch < font[FontStart]) || (ch >= font[FontStart]+font[FontCount]))
@@ -101,6 +92,62 @@ uint8_t Display::putChar(uint8_t X, uint8_t Y,uint8_t ch, const uint8_t* font, b
             bool lastByte = iy / BitsInByte == charHeight / BitsInByte;
             uint8_t extraShift = lastByte ? BitsInByte - charHeight % BitsInByte : 0;
             putDot(X + ix, Y + iy, ((bitPattern >> (extraShift + iy % BitsInByte)) & 0x01) == inverse);
+        }
+    }
+
+    return X + ix;
+}
+
+
+/*
+ * displays text on the screen
+ * text - string to be displayed
+ * X,Y - upper left corner of character placement
+ * font - font array from fonts.h
+ * inverse - clears pixels if true
+ * upToX - if >0, prints the text up to X==upToX
+ */
+uint8_t Display::putText(uint8_t X, uint8_t Y, std::string text, const uint8_t* font, bool inverse, uint8_t upToX)
+{
+    for(size_t index = 0; index < text.size(); index++)
+    {
+        X = putChar(X, Y, text[index], font, inverse, upToX);
+        if(index < text.size() - 1)
+        {
+            X = putChar2CharSpace(X, Y, font, inverse, upToX);
+        }
+    }
+    return X;
+}
+
+/*
+ * displays interspace on the screen
+ * X,Y - upper left corner of character placement
+ * font - font array from fonts.h
+ * inverse - clears pixels if true
+ * upToX - if >0, stops at X==upToX
+ */
+uint8_t Display::putChar2CharSpace(uint8_t X, uint8_t Y, const uint8_t* font, bool inverse, uint8_t upToX)
+{
+    // height of this space
+    uint8_t charHeight = font[FontHeight];
+
+    // width of this space
+    uint8_t spaceWidth = 1 + (charHeight - 2) / 8;
+
+    // for every column
+    uint8_t ix;
+    for(ix = 0; ix < spaceWidth; ix++)
+    {
+        // if upToX!=0 then print up to this X limit
+        if((upToX != 0) && (X+ix > upToX))
+        {
+            break;
+        }
+        // for every horizontal row
+        for(uint8_t iy = 0; iy < charHeight; iy++)
+        {
+            putDot(X + ix, Y + iy, !inverse);
         }
     }
 
