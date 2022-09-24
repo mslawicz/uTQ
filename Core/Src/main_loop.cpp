@@ -17,6 +17,7 @@
 #include "median_filter.h"
 #include "sh1106.h"
 #include "fonts/fonts.h"
+#include "rotary_encoder.h"
 
 ADC_HandleTypeDef* pHadc;    //pointer to ADC object
 SPI_HandleTypeDef* pHspi3;   //pointer to SPI3 object
@@ -51,7 +52,7 @@ void mainLoop()
     GameController gameController;  //USB link-to-PC object (class custom HID - joystick)
 
     pDisplay = new SH1106(pHspi3, DIS_CS_GPIO_Port, DIS_CS_Pin, DIS_DC_GPIO_Port, DIS_DC_Pin, DIS_RESET_GPIO_Port, DIS_RESET_Pin);     //OLED display
-
+    RotaryEncoder encoder(ENC_CLK_GPIO_Port, ENC_CLK_Pin, ENC_DT_GPIO_Port, ENC_DT_Pin, ENC_SW_GPIO_Port, ENC_SW_Pin);
 
     //ADC filter objects
     MedianFilter<uint16_t> throttleFilter(AdcMedianFilterSize);
