@@ -117,6 +117,12 @@ uint8_t Display::putText(uint8_t X, uint8_t Y, std::string text, const uint8_t* 
             X = putChar2CharSpace(X, Y, font, inverse, upToX);
         }
     }
+
+    while((upToX > 0) && (X < upToX) && (X < maxX))
+    {
+        X = putChar2CharSpace(X, Y, font, inverse, upToX);
+    }
+
     return X;
 }
 

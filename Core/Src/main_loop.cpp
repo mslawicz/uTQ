@@ -18,6 +18,7 @@
 #include "sh1106.h"
 #include "fonts/fonts.h"
 #include "rotary_encoder.h"
+#include <sstream>  //XXX test
 
 ADC_HandleTypeDef* pHadc;    //pointer to ADC object
 SPI_HandleTypeDef* pHspi3;   //pointer to SPI3 object
@@ -152,9 +153,19 @@ void mainLoop()
         if(testTimer.hasElapsed(1000000))   //XXX test
         {
             pDisplay->putText(0, 0, "Hello micro TQ", FontTahoma14b);
-            pDisplay->putText(30, 20, "FONT ALIEN 7", FontAlien7);
-            pDisplay->putText(0, 40, "ALIEN 14", FontAlien14);
             testTimer.reset();
+        }
+
+        //XXX encoder test
+        static int16_t pulseCounter{0};
+        int16_t currentPulseCounter = encoder.getPulseCounter();
+        if(pulseCounter != currentPulseCounter)
+        {
+            pulseCounter = currentPulseCounter;
+            std::stringstream ss;
+            ss << " " << pulseCounter;
+            pDisplay->putText(0, 40, ss.str(), FontAlien14, true, 127);
+            LOG_INFO(ss.str());
         }
     }
 }

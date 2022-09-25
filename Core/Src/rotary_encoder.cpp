@@ -51,7 +51,18 @@ void RotaryEncoder::handler()
                 if((currentClkValue == _newClkValue) && (currentClkValue == GPIO_PinState::GPIO_PIN_RESET))
                 {
                     //the new stable clk value is 0 and it is different from the previous one
-                    _pulseCounter += (_newDtValue == GPIO_PinState::GPIO_PIN_SET) ? 1 : -1;
+                    int8_t dPulse = 1;
+                    if(!_lastChangeTimer.hasElapsed(ShortPeriod))
+                    {
+                        //short period between last 2 pulses
+                        dPulse = 5; // @suppress("Avoid magic numbers")
+                    } else if(!_lastChangeTimer.hasElapsed(MediumPeriod))
+                    {
+                        //medium period between last 2 pulses
+                        dPulse = 3; // @suppress("Avoid magic numbers")
+                    }
+                    _pulseCounter += (_newDtValue == GPIO_PinState::GPIO_PIN_SET) ? dPulse : -dPulse;
+                    _lastChangeTimer.reset();
                 }
                 _state = RotEncState::Stable;
             }
