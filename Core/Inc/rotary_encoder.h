@@ -17,16 +17,23 @@ public:
     RotaryEncoder
     (
             GPIO_TypeDef* clkPort, uint16_t clkPin,
-            GPIO_TypeDef* dtPort, uint16_t dtPin,
-            GPIO_TypeDef* pbPort, uint16_t pbPin
+            GPIO_TypeDef* dtPort, uint16_t dtPin
     );
+    void handler();
 private:
+    enum class RotEncState : uint8_t
+    {
+        Stable,
+        Changed
+    };
     GPIO_TypeDef* _clkPort;
     uint16_t _clkPin;
     GPIO_TypeDef* _dtPort;
     uint16_t _dtPin;
     GPIO_TypeDef* _pbPort;
     uint16_t _pbPin;
+    RotEncState _state{RotEncState::Stable};
+    GPIO_PinState _lastClkValue{GPIO_PinState::GPIO_PIN_SET};
 };
 
 

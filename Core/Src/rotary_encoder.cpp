@@ -10,15 +10,24 @@
 RotaryEncoder::RotaryEncoder
 (
         GPIO_TypeDef* clkPort, uint16_t clkPin,
-        GPIO_TypeDef* dtPort, uint16_t dtPin,
-        GPIO_TypeDef* pbPort, uint16_t pbPin
+        GPIO_TypeDef* dtPort, uint16_t dtPin
 ) :
     _clkPort(clkPort),
     _clkPin(clkPin),
     _dtPort(dtPort),
-    _dtPin(dtPin),
-    _pbPort(pbPort),
-    _pbPin(pbPin)
+    _dtPin(dtPin)
 {
 
+}
+
+void RotaryEncoder::handler()
+{
+    switch(_state)
+    {
+    case RotEncState::Stable:
+        break;
+
+    case RotEncState::Changed:
+        break;
+    }
 }
