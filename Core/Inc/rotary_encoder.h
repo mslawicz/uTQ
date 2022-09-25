@@ -20,6 +20,7 @@ public:
             GPIO_TypeDef* dtPort, uint16_t dtPin
     );
     void handler();
+    int16_t getPulseCounter() const { return _pulseCounter; }
 private:
     enum class RotEncState : uint8_t
     {
@@ -30,10 +31,13 @@ private:
     uint16_t _clkPin;
     GPIO_TypeDef* _dtPort;
     uint16_t _dtPin;
-    GPIO_TypeDef* _pbPort;
-    uint16_t _pbPin;
     RotEncState _state{RotEncState::Stable};
-    GPIO_PinState _lastClkValue{GPIO_PinState::GPIO_PIN_SET};
+    GPIO_PinState _lastClkValue{GPIO_PinState::GPIO_PIN_SET};   //last value of clk pin
+    GPIO_PinState _newClkValue{GPIO_PinState::GPIO_PIN_SET};    //clk value recorded on clk change after stable period
+    GPIO_PinState _newDtValue{GPIO_PinState::GPIO_PIN_SET};    //data value recorded on clk change after stable period
+    Timer _stabilityTimer;
+    static constexpr uint32_t StabilityTime{2000};      //requested clock stability time
+    int16_t _pulseCounter{0};   //counts rotation pulses
 };
 
 

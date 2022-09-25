@@ -146,6 +146,9 @@ void mainLoop()
             pDisplay->handler();
         }
 
+        //periodic rotary encoder calls
+        encoder.handler();
+
         if(testTimer.hasElapsed(1000000))   //XXX test
         {
             pDisplay->putText(0, 0, "Hello micro TQ", FontTahoma14b);
