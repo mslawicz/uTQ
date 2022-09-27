@@ -152,21 +152,15 @@ void mainLoop()
 
         if(testTimer.hasElapsed(1000000))   //XXX test
         {
-            pDisplay->putText(0, 0, "Hello micro TQ", FontTahoma14b);
+            pDisplay->putText(0, 0, "Arial 9", FontArial9);
+            pDisplay->putText(0, 10, "Tahoma 11", FontTahoma11);
+            pDisplay->putText(0, 21, "Tahoma 11b", FontTahoma11b);
+            pDisplay->putText(0, 32, "Tahoma 14b", FontTahoma14b);
+            pDisplay->putText(0, 46, "Tahoma 15", FontTahoma15);
+            //pDisplay->putText(0, 32, "Tahoma 16b", FontTahoma16b);
             testTimer.reset();
         }
 
-        //XXX encoder test
-        static int16_t pulseCounter{0};
-        int16_t currentPulseCounter = encoder.getPulseCounter();
-        if(pulseCounter != currentPulseCounter)
-        {
-            pulseCounter = currentPulseCounter;
-            std::stringstream ss;
-            ss << " " << pulseCounter;
-            pDisplay->putText(0, 40, ss.str(), FontAlien14, true, 127);
-            LOG_INFO(ss.str());
-        }
     }
 }
 
