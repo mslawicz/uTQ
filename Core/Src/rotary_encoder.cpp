@@ -72,3 +72,23 @@ void RotaryEncoder::handler()
 
     _lastClkValue = currentClkValue;
 }
+
+//takes one pulse from the pulse counter and returns its value
+// -1 - rotation to the left
+// 0 - no rotation
+// 1 - rotation to the right
+int8_t RotaryEncoder::getPulse()
+{
+    int8_t retValue{0};
+    if(_pulseCounter < 0)
+    {
+        _pulseCounter++;
+        retValue = -1;
+    }
+    else if(_pulseCounter > 0)
+    {
+        _pulseCounter--;
+        retValue = 1;
+    }
+    return retValue;
+}

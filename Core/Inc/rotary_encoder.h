@@ -21,6 +21,7 @@ public:
     );
     void handler();
     int16_t getPulseCounter() const { return _pulseCounter; }
+    int8_t getPulse();
 private:
     enum class RotEncState : uint8_t
     {

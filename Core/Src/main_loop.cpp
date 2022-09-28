@@ -18,6 +18,7 @@
 #include "sh1106.h"
 #include "fonts/fonts.h"
 #include "rotary_encoder.h"
+#include "button_trigger.h"
 #include <sstream>  //XXX test
 
 ADC_HandleTypeDef* pHadc;    //pointer to ADC object
@@ -54,6 +55,7 @@ void mainLoop()
 
     pDisplay = new SH1106(pHspi3, DIS_CS_GPIO_Port, DIS_CS_Pin, DIS_DC_GPIO_Port, DIS_DC_Pin, DIS_RESET_GPIO_Port, DIS_RESET_Pin);     //OLED display
     RotaryEncoder encoder(ENC_CLK_GPIO_Port, ENC_CLK_Pin, ENC_DT_GPIO_Port, ENC_DT_Pin);  //rotary encoder object
+    ButtonTrigger buttonTrigger([&](){ return encoder.getPulse(); });   //object for button press generation from encoder rotations
 
     //ADC filter objects
     MedianFilter<uint16_t> throttleFilter(AdcMedianFilterSize);
@@ -123,6 +125,7 @@ void mainLoop()
             gameController.data.Z = scale<uint16_t, int16_t>(0, Max12Bit, mixtureFilter.getMedian(), -Max15Bit, Max15Bit);
 
             //set game controller buttons
+            gameController.data.buttons = 0;
             gameController.setButton(GameControllerButton::reverser, reverseOn);
             gameController.setButton(GameControllerButton::flapsUp, HAL_GPIO_ReadPin(FLAPS_UP_GPIO_Port, FLAPS_UP_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             gameController.setButton(GameControllerButton::flapsDown, HAL_GPIO_ReadPin(FLAPS_DOWN_GPIO_Port, FLAPS_DOWN_Pin) == GPIO_PinState::GPIO_PIN_RESET);
@@ -132,6 +135,12 @@ void mainLoop()
             gameController.setButton(GameControllerButton::greenButton, HAL_GPIO_ReadPin(PB_GREEN_GPIO_Port, PB_GREEN_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             gameController.setButton(GameControllerButton::leftToggle, HAL_GPIO_ReadPin(TOGGLE_LEFT_GPIO_Port, TOGGLE_LEFT_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             gameController.setButton(GameControllerButton::rightToggle, HAL_GPIO_ReadPin(TOGGLE_RIGHT_GPIO_Port, TOGGLE_RIGHT_Pin) == GPIO_PinState::GPIO_PIN_RESET);
+            if(/*menuHeading == */true)
+            {
+                buttonTrigger.handler();
+                gameController.setButton(GameControllerButton::headingDec, buttonTrigger.getButtonState().first);   //dec heading
+                gameController.setButton(GameControllerButton::headingInc, buttonTrigger.getButtonState().second);  //inc heading
+            }
 
             gameController.sendReport();
             gameCtrlTimer.reset();
