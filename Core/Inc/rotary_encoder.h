@@ -21,6 +21,8 @@ public:
     );
     void handler();
     int16_t getPulseCounter() const { return _pulseCounter; }
+    bool isToLeft();
+    bool isToRight();
 private:
     enum class RotEncState : uint8_t
     {
@@ -38,9 +40,6 @@ private:
     Timer _stabilityTimer;
     static constexpr uint32_t StabilityTime{2000};      //requested clock stability time
     int16_t _pulseCounter{0};   //counts rotation pulses
-    static constexpr uint32_t ShortPeriod{30000};
-    static constexpr uint32_t MediumPeriod{60000};
-    Timer _lastChangeTimer;
 };
 
 

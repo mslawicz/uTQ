@@ -123,6 +123,7 @@ void mainLoop()
             gameController.data.Z = scale<uint16_t, int16_t>(0, Max12Bit, mixtureFilter.getMedian(), -Max15Bit, Max15Bit);
 
             //set game controller buttons
+            gameController.data.buttons = 0;
             gameController.setButton(GameControllerButton::reverser, reverseOn);
             gameController.setButton(GameControllerButton::flapsUp, HAL_GPIO_ReadPin(FLAPS_UP_GPIO_Port, FLAPS_UP_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             gameController.setButton(GameControllerButton::flapsDown, HAL_GPIO_ReadPin(FLAPS_DOWN_GPIO_Port, FLAPS_DOWN_Pin) == GPIO_PinState::GPIO_PIN_RESET);
@@ -132,6 +133,11 @@ void mainLoop()
             gameController.setButton(GameControllerButton::greenButton, HAL_GPIO_ReadPin(PB_GREEN_GPIO_Port, PB_GREEN_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             gameController.setButton(GameControllerButton::leftToggle, HAL_GPIO_ReadPin(TOGGLE_LEFT_GPIO_Port, TOGGLE_LEFT_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             gameController.setButton(GameControllerButton::rightToggle, HAL_GPIO_ReadPin(TOGGLE_RIGHT_GPIO_Port, TOGGLE_RIGHT_Pin) == GPIO_PinState::GPIO_PIN_RESET);
+            if(/*menuHeading == */true)
+            {
+                gameController.setButton(GameControllerButton::headingDec, encoder.isToLeft());   //dec heading
+                gameController.setButton(GameControllerButton::headingInc, encoder.isToRight());  //inc heading
+            }
 
             gameController.sendReport();
             gameCtrlTimer.reset();

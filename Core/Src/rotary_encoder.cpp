@@ -51,18 +51,7 @@ void RotaryEncoder::handler()
                 if((currentClkValue == _newClkValue) && (currentClkValue == GPIO_PinState::GPIO_PIN_RESET))
                 {
                     //the new stable clk value is 0 and it is different from the previous one
-                    int8_t dPulse = 1;
-                    if(!_lastChangeTimer.hasElapsed(ShortPeriod))
-                    {
-                        //short period between last 2 pulses
-                        dPulse = 5; // @suppress("Avoid magic numbers")
-                    } else if(!_lastChangeTimer.hasElapsed(MediumPeriod))
-                    {
-                        //medium period between last 2 pulses
-                        dPulse = 3; // @suppress("Avoid magic numbers")
-                    }
-                    _pulseCounter += (_newDtValue == GPIO_PinState::GPIO_PIN_SET) ? dPulse : -dPulse;
-                    _lastChangeTimer.reset();
+                    _pulseCounter += (_newDtValue == GPIO_PinState::GPIO_PIN_SET) ? 1 : -1;
                 }
                 _state = RotEncState::Stable;
             }
@@ -71,4 +60,28 @@ void RotaryEncoder::handler()
     }
 
     _lastClkValue = currentClkValue;
+}
+
+//returns true if encoder is rotated to left and takes out one pulse from the queue
+bool RotaryEncoder::isToLeft()
+{
+    bool retVal{false};
+    if(_pulseCounter < 0)
+    {
+        retVal = true;
+        _pulseCounter++;
+    }
+    return retVal;
+}
+
+//returns true if encoder is rotated to right and takes out one pulse from the queue
+bool RotaryEncoder::isToRight()
+{
+    bool retVal{false};
+    if(_pulseCounter > 0)
+    {
+        retVal = true;
+        _pulseCounter--;
+    }
+    return retVal;
 }
