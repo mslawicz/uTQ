@@ -17,7 +17,6 @@
 #include "median_filter.h"
 #include "sh1106.h"
 #include "fonts/fonts.h"
-#include "rotary_encoder.h"
 #include <sstream>  //XXX test
 
 ADC_HandleTypeDef* pHadc;    //pointer to ADC object
@@ -53,7 +52,6 @@ void mainLoop()
     GameController gameController;  //USB link-to-PC object (class custom HID - joystick)
 
     pDisplay = new SH1106(pHspi3, DIS_CS_GPIO_Port, DIS_CS_Pin, DIS_DC_GPIO_Port, DIS_DC_Pin, DIS_RESET_GPIO_Port, DIS_RESET_Pin);     //OLED display
-    RotaryEncoder encoder(ENC_CLK_GPIO_Port, ENC_CLK_Pin, ENC_DT_GPIO_Port, ENC_DT_Pin);  //rotary encoder object
 
     //ADC filter objects
     MedianFilter<uint16_t> throttleFilter(AdcMedianFilterSize);
@@ -135,8 +133,8 @@ void mainLoop()
             gameController.setButton(GameControllerButton::rightToggle, HAL_GPIO_ReadPin(TOGGLE_RIGHT_GPIO_Port, TOGGLE_RIGHT_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             if(/*menuHeading == */true)
             {
-                gameController.setButton(GameControllerButton::headingDec, encoder.isToLeft());   //dec heading
-                gameController.setButton(GameControllerButton::headingInc, encoder.isToRight());  //inc heading
+                gameController.setButton(GameControllerButton::headingDec, HAL_GPIO_ReadPin(HAT_LEFT_GPIO_Port, HAT_LEFT_Pin) == GPIO_PinState::GPIO_PIN_RESET);   //dec heading
+                gameController.setButton(GameControllerButton::headingInc, HAL_GPIO_ReadPin(HAT_RIGHT_GPIO_Port, HAT_RIGHT_Pin) == GPIO_PinState::GPIO_PIN_RESET);  //inc heading
             }
 
             gameController.sendReport();
@@ -152,9 +150,6 @@ void mainLoop()
         {
             pDisplay->handler();
         }
-
-        //periodic rotary encoder calls
-        encoder.handler();
 
         if(testTimer.hasElapsed(1000000))   //XXX test
         {
