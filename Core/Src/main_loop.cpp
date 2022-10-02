@@ -156,7 +156,7 @@ void mainLoop()
             pDisplay->putText(0, 0, "Arial 9", FontArial9);
             pDisplay->putText(0, 10, "Tahoma 11", FontTahoma11);
             pDisplay->putText(0, 21, "Tahoma 11b", FontTahoma11b);
-            pDisplay->putText(0, 32, "Tahoma 14b", FontTahoma14b);
+            pDisplay->putText(0, 32, "$H #V %V &s", FontTahoma14b);
             pDisplay->putText(0, 46, "Tahoma 15", FontTahoma15);
             //pDisplay->putText(0, 32, "Tahoma 16b", FontTahoma16b);
             testTimer.reset();
