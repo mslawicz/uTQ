@@ -20,7 +20,7 @@
 #include <sstream>  //XXX test
 
 ADC_HandleTypeDef* pHadc;    //pointer to ADC object
-SPI_HandleTypeDef* pHspi3;   //pointer to SPI3 object
+SPI_HandleTypeDef* pHspi2;   //pointer to SPI2 object
 uint16_t adcConvBuffer[MAX_ADC_CH]; //buffer for ADC conversion results
 bool adcDataReady = true;
 Display* pDisplay = nullptr;
@@ -51,7 +51,7 @@ void mainLoop()
 
     GameController gameController;  //USB link-to-PC object (class custom HID - joystick)
 
-    pDisplay = new SH1106(pHspi3, DIS_CS_GPIO_Port, DIS_CS_Pin, DIS_DC_GPIO_Port, DIS_DC_Pin, DIS_RESET_GPIO_Port, DIS_RESET_Pin);     //OLED display
+    pDisplay = new SH1106(pHspi2, DIS_CS_GPIO_Port, DIS_CS_Pin, DIS_DC_GPIO_Port, DIS_DC_Pin, DIS_RESET_GPIO_Port, DIS_RESET_Pin);     //OLED display
 
     //ADC filter objects
     MedianFilter<uint16_t> throttleFilter(AdcMedianFilterSize);
@@ -188,7 +188,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
   */
 void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
 {
-    if(hspi == pHspi3)
+    if(hspi == pHspi2)
     {
         if(pDisplay != nullptr)
         {
