@@ -96,12 +96,12 @@ void SH1106::handler()
             }
         }
 
-        if(!_displayOn && !_refreshRequest)
+        if(!displayOn && !_refreshRequest)
         {
             //one-shot action after the first refresh
             uint8_t displayOnCmd = 0xAF;    //display on command code
             write(SH1106Control::command, &displayOnCmd, 1);
-            _displayOn = true;
+            displayOn = true;
         }
         break;
 

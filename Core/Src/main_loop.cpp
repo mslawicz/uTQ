@@ -16,7 +16,6 @@
 #include "monitor.h"
 #include "median_filter.h"
 #include "sh1106.h"
-#include "fonts/fonts.h"
 #include "menu.h"
 #include <sstream>  //XXX test
 
@@ -38,6 +37,7 @@ void mainLoop()
     constexpr uint32_t AdcPeriod = GameController::ReportInterval / AdcMedianFilterSize;
     bool reverseOn = false;     //state of thrust reverser
     bool reverseOffArmed = false;    //automatic reverse off flag
+    uint8_t lastMenuItemIdx = 0xFF; //remembers the previous menu item index
     Timer statusLedTimer;
     Timer gameCtrlTimer;
     Timer adcTimer;
@@ -60,7 +60,7 @@ void mainLoop()
     MedianFilter<uint16_t> mixtureFilter(AdcMedianFilterSize);
 
     //display menu
-    Menu menu;
+    Menu menu(pDisplay);
     menu.registerItem(MenuId::AircraftType, "$Aircraft type");
     menu.registerItem(MenuId::Heading, "$HDG %AP");
 
@@ -157,14 +157,17 @@ void mainLoop()
             pDisplay->handler();
         }
 
-        if(testTimer.hasElapsed(1000000))   //XXX test
+        //print new menu item
+        if((menu.getItemIdx() != lastMenuItemIdx) && (pDisplay->isOn()))
+        {
+            lastMenuItemIdx = menu.getItemIdx();
+            menu.display();
+        }
+
+        if(testTimer.hasElapsed(3000000))   //XXX test
         {
             pDisplay->putText(0, 0, "Arial 9", FontArial9);
-            pDisplay->putText(0, 10, "Tahoma 11", FontTahoma11);
-            pDisplay->putText(0, 21, "Tahoma 11b", FontTahoma11b);
-            pDisplay->putText(0, 32, "$H #V %V &s", FontTahoma14b);
-            pDisplay->putText(0, 46, "Tahoma 15", FontTahoma15);
-            //pDisplay->putText(0, 32, "Tahoma 16b", FontTahoma16b);
+            pDisplay->putText(0, 10, "Tahoma 11", FontTahoma11);;
             testTimer.reset();
         }
 

@@ -9,6 +9,7 @@
 #define INC_DISPLAY_H_
 
 #include "stm32f4xx_hal.h"
+#include "fonts/fonts.h"
 #include <string>
 
 enum FontField
@@ -31,9 +32,12 @@ public:
     void putLine(uint8_t fromX, uint8_t fromY, uint8_t toX, uint8_t toY, bool inverse = false);
     uint8_t putChar(uint8_t X, uint8_t Y, uint8_t ch, const uint8_t* font, bool inverse = false, uint8_t upToX = 0);
     uint8_t putText(uint8_t X, uint8_t Y, std::string text, const uint8_t* font, bool inverse = false, uint8_t upToX = 0);
+    uint8_t getMaxX() const { return maxX; }
+    bool isOn() const { return displayOn; }
 protected:
     size_t maxX{0};
     size_t maxY{0};
+    bool displayOn{false};
 private:
     uint8_t putChar2CharSpace(uint8_t X, uint8_t Y, const uint8_t* font, bool inverse = false, uint8_t upToX = 0);
 };

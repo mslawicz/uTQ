@@ -78,7 +78,6 @@ private:
     };
     std::array<SH1106Page, NoOfPages> displayData;
     bool _refreshRequest{false};
-    bool _displayOn{false};
     uint8_t _pageNo{0};
 };
 
