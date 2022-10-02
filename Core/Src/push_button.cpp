@@ -57,6 +57,7 @@ void PushButton::handler()
 
 bool PushButton::hasBeenPressed()
 {
+    handler();
     auto hasBeenPressed = _hasBeenPressed;
     _hasBeenPressed = false;
     return hasBeenPressed;

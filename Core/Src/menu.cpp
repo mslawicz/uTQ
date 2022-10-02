@@ -25,3 +25,12 @@ void Menu::display()
         _pDisplay->putText(0, PosY, _items[_itemIdx].text, FontTahoma14b, false, _pDisplay->getMaxX());
     }
 }
+
+void Menu::changeItem(int8_t change)
+{
+    auto menuSize = _items.size();
+    if(menuSize > 1)
+    {
+        _itemIdx = (_itemIdx + change) % menuSize;
+    }
+}

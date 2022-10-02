@@ -15,8 +15,8 @@ class PushButton
 {
 public:
     PushButton(GPIO_TypeDef* port, uint16_t pin, GPIO_PinState activeLevel = GPIO_PinState::GPIO_PIN_RESET);
-    bool isPressed() const { return _buttonLevel == _activeLevel; }
-    bool isLongPressed() const { return (_buttonLevel == _activeLevel) && (_stateTimer.hasElapsed(LongPressTime)); }
+    bool isPressed() { handler(); return _buttonLevel == _activeLevel; }
+    bool isLongPressed() { handler(); return (_buttonLevel == _activeLevel) && (_stateTimer.hasElapsed(LongPressTime)); }
     bool hasBeenPressed();
 private:
     enum class State : uint8_t

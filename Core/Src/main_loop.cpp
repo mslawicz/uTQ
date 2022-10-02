@@ -17,6 +17,7 @@
 #include "median_filter.h"
 #include "sh1106.h"
 #include "menu.h"
+#include "push_button.h"
 #include <sstream>  //XXX test
 
 ADC_HandleTypeDef* pHadc;    //pointer to ADC object
@@ -63,6 +64,10 @@ void mainLoop()
     Menu menu(pDisplay);
     menu.registerItem(MenuId::AircraftType, "$Aircraft type");
     menu.registerItem(MenuId::Heading, "$HDG %AP");
+
+    //pushbutton objects
+    PushButton menuLeft(HAT_SET_GPIO_Port, HAT_SET_Pin);
+    PushButton menuRight(HAT_RST_GPIO_Port, HAT_RST_Pin);
 
     Timer::start(pTimerHtim);
 
@@ -137,7 +142,7 @@ void mainLoop()
             gameController.setButton(GameControllerButton::greenButton, HAL_GPIO_ReadPin(PB_GREEN_GPIO_Port, PB_GREEN_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             gameController.setButton(GameControllerButton::leftToggle, HAL_GPIO_ReadPin(TOGGLE_LEFT_GPIO_Port, TOGGLE_LEFT_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             gameController.setButton(GameControllerButton::rightToggle, HAL_GPIO_ReadPin(TOGGLE_RIGHT_GPIO_Port, TOGGLE_RIGHT_Pin) == GPIO_PinState::GPIO_PIN_RESET);
-            if(/*menuHeading == */true)
+            if(menu.getItemId() == MenuId::Heading)
             {
                 gameController.setButton(GameControllerButton::headingDec, HAL_GPIO_ReadPin(HAT_LEFT_GPIO_Port, HAT_LEFT_Pin) == GPIO_PinState::GPIO_PIN_RESET);   //dec heading
                 gameController.setButton(GameControllerButton::headingInc, HAL_GPIO_ReadPin(HAT_RIGHT_GPIO_Port, HAT_RIGHT_Pin) == GPIO_PinState::GPIO_PIN_RESET);  //inc heading
@@ -155,6 +160,16 @@ void mainLoop()
         if(pDisplay != nullptr)
         {
             pDisplay->handler();
+        }
+
+        //handle menu change
+        if(menuLeft.hasBeenPressed())
+        {
+            menu.decItem();
+        }
+        if(menuRight.hasBeenPressed())
+        {
+            menu.incItem();
         }
 
         //print new menu item

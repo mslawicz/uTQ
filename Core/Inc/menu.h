@@ -26,7 +26,11 @@ public:
     void registerItem(MenuId itemId, std::string text);
     void display();
     uint8_t getItemIdx() const { return _itemIdx; }
+    void incItem() { changeItem(1); }
+    void decItem() { changeItem(-1); }
+    MenuId getItemId() const { return _items[_itemIdx].itemId; }
 private:
+    void changeItem(int8_t change);
     struct MenuItem
     {
         MenuId itemId;

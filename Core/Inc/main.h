@@ -85,14 +85,8 @@ void Error_Handler(void);
 #define PB_RED_GPIO_Port GPIOB
 #define DIS_RESET_Pin GPIO_PIN_14
 #define DIS_RESET_GPIO_Port GPIOB
-#define HAT_RST_Pin GPIO_PIN_6
-#define HAT_RST_GPIO_Port GPIOC
 #define GEAR_DOWN_Pin GPIO_PIN_7
 #define GEAR_DOWN_GPIO_Port GPIOC
-#define HAT_SET_Pin GPIO_PIN_8
-#define HAT_SET_GPIO_Port GPIOC
-#define HAT_MID_Pin GPIO_PIN_9
-#define HAT_MID_GPIO_Port GPIOC
 #define PB_GREEN_Pin GPIO_PIN_8
 #define PB_GREEN_GPIO_Port GPIOA
 #define TOGGLE_RIGHT_Pin GPIO_PIN_9
@@ -105,6 +99,12 @@ void Error_Handler(void);
 #define TCK_GPIO_Port GPIOA
 #define DIS_CSA15_Pin GPIO_PIN_15
 #define DIS_CSA15_GPIO_Port GPIOA
+#define HAT_SET_Pin GPIO_PIN_10
+#define HAT_SET_GPIO_Port GPIOC
+#define HAT_RST_Pin GPIO_PIN_11
+#define HAT_RST_GPIO_Port GPIOC
+#define HAT_MID_Pin GPIO_PIN_12
+#define HAT_MID_GPIO_Port GPIOC
 #define SWO_Pin GPIO_PIN_3
 #define SWO_GPIO_Port GPIOB
 #define TOGGLE_LEFT_Pin GPIO_PIN_4

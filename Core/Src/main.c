@@ -433,10 +433,10 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : HAT_LEFT_Pin HAT_UP_Pin HAT_DOWN_Pin HAT_RIGHT_Pin
-                           FLAPS_DOWN_Pin HAT_RST_Pin GEAR_DOWN_Pin HAT_SET_Pin
+                           FLAPS_DOWN_Pin GEAR_DOWN_Pin HAT_SET_Pin HAT_RST_Pin
                            HAT_MID_Pin */
   GPIO_InitStruct.Pin = HAT_LEFT_Pin|HAT_UP_Pin|HAT_DOWN_Pin|HAT_RIGHT_Pin
-                          |FLAPS_DOWN_Pin|HAT_RST_Pin|GEAR_DOWN_Pin|HAT_SET_Pin
+                          |FLAPS_DOWN_Pin|GEAR_DOWN_Pin|HAT_SET_Pin|HAT_RST_Pin
                           |HAT_MID_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
