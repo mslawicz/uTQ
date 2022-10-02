@@ -17,6 +17,7 @@
 #include "median_filter.h"
 #include "sh1106.h"
 #include "fonts/fonts.h"
+#include "menu.h"
 #include <sstream>  //XXX test
 
 ADC_HandleTypeDef* pHadc;    //pointer to ADC object
@@ -57,6 +58,11 @@ void mainLoop()
     MedianFilter<uint16_t> throttleFilter(AdcMedianFilterSize);
     MedianFilter<uint16_t> propellerFilter(AdcMedianFilterSize);
     MedianFilter<uint16_t> mixtureFilter(AdcMedianFilterSize);
+
+    //display menu
+    Menu menu;
+    menu.registerItem(MenuId::AircraftType, "$Aircraft type");
+    menu.registerItem(MenuId::Heading, "$HDG %AP");
 
     Timer::start(pTimerHtim);
 
