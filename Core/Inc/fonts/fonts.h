@@ -18,6 +18,7 @@
 #include "Tahoma14b.h"
 #include "Tahoma15.h"
 #include "Tahoma16b.h"
+#include "Tahoma20b.h"
 #include "Arial42d.h"
 
 extern const uint8_t FontAlien7[];

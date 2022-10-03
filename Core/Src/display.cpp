@@ -159,3 +159,23 @@ uint8_t Display::putChar2CharSpace(uint8_t X, uint8_t Y, const uint8_t* font, bo
 
     return X + ix;
 }
+
+/*
+ * displays rectangle on the screen
+ * fromX, fromY - upper left corner
+ * toX, toY - lower right corner
+ * inverse - clears pixels if true
+ */
+uint8_t Display::putRectangle(uint8_t fromX, uint8_t fromY, uint8_t toX, uint8_t toY, bool inverse)
+{
+    uint8_t X;
+    for(X = fromX; X <= toX; X++)
+    {
+        for(uint8_t Y = fromY; Y <= toY; Y++)
+        {
+            putDot(X, Y, inverse);
+        }
+    }
+
+    return X;
+}

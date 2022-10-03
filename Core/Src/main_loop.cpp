@@ -18,7 +18,8 @@
 #include "sh1106.h"
 #include "menu.h"
 #include "push_button.h"
-#include <sstream>  //XXX test
+#include "info_window.h"
+//#include <sstream>  //XXX test
 
 ADC_HandleTypeDef* pHadc;    //pointer to ADC object
 SPI_HandleTypeDef* pHspi2;   //pointer to SPI2 object
@@ -42,8 +43,6 @@ void mainLoop()
     Timer statusLedTimer;
     Timer gameCtrlTimer;
     Timer adcTimer;
-    Timer testTimer;    //XXX test
-    testTimer.reset();
 
     LOG_ALWAYS("micro TQ v1.0");
 
@@ -68,6 +67,11 @@ void mainLoop()
     //pushbutton objects
     PushButton menuLeft(HAT_SET_GPIO_Port, HAT_SET_Pin);
     PushButton menuRight(HAT_RST_GPIO_Port, HAT_RST_Pin);
+
+    //info window object and data structure
+    InfoWindow infoWindow(pDisplay);
+    InfoData infoData;
+    InfoMode mainInfoMode{InfoMode::Timer};
 
     Timer::start(pTimerHtim);
 
@@ -110,6 +114,7 @@ void mainLoop()
         {
             reverseOn = true;
             reverseOffArmed = false;
+            infoData.mode = InfoMode::Reverser;
         }
         if((reverseOn == true) &&   //reverser is on
            (throttleFilter.getMedian() > ADC20Pct))     //throttle > 20%
@@ -121,6 +126,7 @@ void mainLoop()
         {
             reverseOn = false;
             reverseOffArmed = false;
+            infoData.mode = mainInfoMode;
         }
 
         //process USB reports
@@ -179,13 +185,8 @@ void mainLoop()
             menu.display();
         }
 
-        if(testTimer.hasElapsed(3000000))   //XXX test
-        {
-            pDisplay->putText(0, 0, "Arial 9", FontArial9);
-            pDisplay->putText(0, 10, "Tahoma 11", FontTahoma11);;
-            testTimer.reset();
-        }
-
+        //display info window
+        infoWindow.handler(infoData);
     }
 }
 

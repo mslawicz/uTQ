@@ -34,6 +34,7 @@ public:
     uint8_t putText(uint8_t X, uint8_t Y, std::string text, const uint8_t* font, bool inverse = false, uint8_t upToX = 0);
     uint8_t getMaxX() const { return maxX; }
     bool isOn() const { return displayOn; }
+    uint8_t putRectangle(uint8_t fromX, uint8_t fromY, uint8_t toX, uint8_t toY, bool inverse = false);
 protected:
     size_t maxX{0};
     size_t maxY{0};
