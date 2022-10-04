@@ -67,6 +67,8 @@ void mainLoop()
     //pushbutton objects
     PushButton menuLeft(HAT_SET_GPIO_Port, HAT_SET_Pin);
     PushButton menuRight(HAT_RST_GPIO_Port, HAT_RST_Pin);
+    PushButton hatLeft(HAT_LEFT_GPIO_Port, HAT_LEFT_Pin);
+    PushButton hatRight(HAT_RIGHT_GPIO_Port, HAT_RIGHT_Pin);
 
     //info window object and data structure
     InfoWindow infoWindow(pDisplay);
@@ -111,7 +113,8 @@ void mainLoop()
         //process thrust reverser button
         //activate reverser on button press when throttle is idle
         //deactivate reverser automatically when throttle is idle again
-        if((reverseOn == false) &&      //reverser is off
+        if((status.getAircraftType() == AircraftType::Engine) &&
+           (reverseOn == false) &&      //reverser is off
            (HAL_GPIO_ReadPin(PB_RED_GPIO_Port, PB_RED_Pin) == GPIO_PinState::GPIO_PIN_RESET) &&       //reverse button is pressed
            (throttleFilter.getMedian() < ADC10Pct))     //throttle is < 10%
         {
@@ -181,18 +184,36 @@ void mainLoop()
             menu.incItem();
         }
 
-        //print new menu item
-        if((menu.getItemIdx() != lastMenuItemIdx) && (pDisplay->isOn()))
+        //handle aircraft type change
+        if(menu.getItemId() == MenuId::AircraftType)
         {
-            lastMenuItemIdx = menu.getItemIdx();
-            menu.display();
+            if(hatLeft.hasBeenPressed())
+            {
+                status.changeAircraftType(-1);
+            }
+
+            if(hatRight.hasBeenPressed())
+            {
+                status.changeAircraftType(1);
+            }
         }
 
-        //display info window
-        infoWindow.handler(infoData);
+        if(pDisplay->isOn())
+        {
 
-        //handle status
-        status.handler();
+            //print new menu item
+            if(menu.getItemIdx() != lastMenuItemIdx)
+            {
+                lastMenuItemIdx = menu.getItemIdx();
+                menu.display();
+            }
+
+            //display info window
+            infoWindow.handler(infoData);
+
+            //handle status
+            status.handler();
+        }
     }
 }
 
