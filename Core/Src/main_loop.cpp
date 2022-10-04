@@ -61,6 +61,7 @@ void mainLoop()
 
     //display menu
     Menu menu(pDisplay);
+    menu.registerItem(MenuId::Timer, "%Reset timer");
     menu.registerItem(MenuId::AircraftType, "$Aircraft type");
     menu.registerItem(MenuId::Heading, "$HDG %AP");
 

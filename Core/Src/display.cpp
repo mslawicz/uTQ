@@ -179,3 +179,26 @@ uint8_t Display::putRectangle(uint8_t fromX, uint8_t fromY, uint8_t toX, uint8_t
 
     return X;
 }
+
+/*
+ * displays frame on the screen
+ * fromX, fromY - upper left corner
+ * toX, toY - lower right corner
+ * inverse - clears pixels if true
+ */
+uint8_t Display::putFrame(uint8_t fromX, uint8_t fromY, uint8_t toX, uint8_t toY, bool inverse)
+{
+    for(uint8_t X = fromX + 1; X <= toX - 1; X++)
+    {
+        putDot(X, fromY, inverse);
+        putDot(X, toY, inverse);
+    }
+
+    for(uint8_t Y = fromY; Y <= toY; Y++)
+    {
+        putDot(fromX, Y, inverse);
+        putDot(toX, Y, inverse);
+    }
+
+    return toX;
+}

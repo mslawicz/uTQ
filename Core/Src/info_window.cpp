@@ -26,6 +26,24 @@ void InfoWindow::handler(InfoData& infoData)
         }
         break;
 
+    case InfoMode::Timer:
+        if(infoData.mode != _previousMode)
+        {
+            _pDisplay->putRectangle(FromX, FromY, ToX, ToY, true);
+
+            static constexpr uint8_t MinutesX = 0;
+            static constexpr uint8_t MinutesY = 22;
+            static constexpr uint8_t MinutesSize = 38;
+            static constexpr uint8_t BarLength = 59;
+            static constexpr uint8_t BarHeight = 8;
+            static constexpr uint8_t BarY = MinutesY + 2;
+            static constexpr uint8_t FrameHight = BarHeight + 6;
+            //XXX test of digits
+            auto x = _pDisplay->putText(MinutesX, MinutesY, "28'", FontTahoma20b, false, MinutesX + MinutesSize);
+            _pDisplay->putFrame(x, BarY, x + BarLength + 1, BarY + FrameHight - 1);
+        }
+        break;
+
     default:
         if(infoData.mode != _previousMode)
         {

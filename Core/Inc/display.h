@@ -35,6 +35,7 @@ public:
     uint8_t getMaxX() const { return maxX; }
     bool isOn() const { return displayOn; }
     uint8_t putRectangle(uint8_t fromX, uint8_t fromY, uint8_t toX, uint8_t toY, bool inverse = false);
+    uint8_t putFrame(uint8_t fromX, uint8_t fromY, uint8_t toX, uint8_t toY, bool inverse = false);
 protected:
     size_t maxX{0};
     size_t maxY{0};

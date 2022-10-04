@@ -15,6 +15,7 @@
 
 enum class MenuId : uint8_t
 {
+    Timer,
     AircraftType,
     Heading
 };
