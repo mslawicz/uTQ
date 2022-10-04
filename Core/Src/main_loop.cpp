@@ -19,7 +19,7 @@
 #include "menu.h"
 #include "push_button.h"
 #include "info_window.h"
-//#include <sstream>  //XXX test
+#include "status.h"
 
 ADC_HandleTypeDef* pHadc;    //pointer to ADC object
 SPI_HandleTypeDef* pHspi2;   //pointer to SPI2 object
@@ -72,6 +72,9 @@ void mainLoop()
     InfoWindow infoWindow(pDisplay);
     InfoData infoData;
     InfoMode mainInfoMode{InfoMode::Timer};
+
+    //Status object
+    Status status(pDisplay);
 
     Timer::start(pTimerHtim);
 
@@ -187,6 +190,9 @@ void mainLoop()
 
         //display info window
         infoWindow.handler(infoData);
+
+        //handle status
+        status.handler();
     }
 }
 
