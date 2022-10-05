@@ -73,7 +73,10 @@ void mainLoop()
 
     //info window object and data structure
     InfoWindow infoWindow(pDisplay);
+    Timer pilotsTimer;
+    pilotsTimer.reset();
     InfoData infoData;
+    infoData.pTimer = &pilotsTimer;
     InfoMode mainInfoMode{InfoMode::Timer};
 
     //Status object

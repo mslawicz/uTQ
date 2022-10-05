@@ -10,6 +10,7 @@
 
 #include "stm32f4xx_hal.h"
 #include "display.h"
+#include "timer.h"
 
 enum class InfoMode : uint8_t
 {
@@ -19,6 +20,7 @@ enum class InfoMode : uint8_t
 
 struct InfoData
 {
+    Timer* pTimer;
     InfoMode mode;
 };
 
@@ -35,6 +37,8 @@ private:
     static constexpr uint8_t FromY = 16;
     static constexpr uint8_t ToX = 127;
     static constexpr uint8_t ToY = 46;
+    uint8_t _lastSecondsToDisplay{60};
+    uint8_t _lastMinutesToDisplay{100};
 };
 
 
