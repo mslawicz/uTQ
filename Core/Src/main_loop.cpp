@@ -44,6 +44,7 @@ void mainLoop()
     Timer gameCtrlTimer;
     Timer adcTimer;
 
+    Timer::start(pTimerHtim);
     LOG_ALWAYS("micro TQ v1.0");
 
     //assign system LEDs
@@ -70,19 +71,19 @@ void mainLoop()
     PushButton menuRight(HAT_RST_GPIO_Port, HAT_RST_Pin);
     PushButton hatLeft(HAT_LEFT_GPIO_Port, HAT_LEFT_Pin);
     PushButton hatRight(HAT_RIGHT_GPIO_Port, HAT_RIGHT_Pin);
+    PushButton hatMid(HAT_MID_GPIO_Port, HAT_MID_Pin);
 
     //info window object and data structure
     InfoWindow infoWindow(pDisplay);
     Timer pilotsTimer;
     pilotsTimer.reset();
-    InfoData infoData;
-    infoData.pTimer = &pilotsTimer;
     InfoMode mainInfoMode{InfoMode::Timer};
+    InfoData infoData = {&pilotsTimer, mainInfoMode};
 
     //Status object
     Status status(pDisplay);
 
-    Timer::start(pTimerHtim);
+
 
     /* main forever loop */
     while(true)
@@ -186,6 +187,13 @@ void mainLoop()
         if(menuRight.hasBeenPressed())
         {
             menu.incItem();
+        }
+
+        //pilots timer reset
+        if((menu.getItemId() == MenuId::Timer) &&
+           (hatMid.hasBeenPressed()))
+        {
+            infoData.pTimer->reset();
         }
 
         //handle aircraft type change
