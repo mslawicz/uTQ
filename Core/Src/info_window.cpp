@@ -10,6 +10,7 @@
 InfoWindow::InfoWindow(Display *pDisplay) :
     _pDisplay(pDisplay)
 {
+    _timer.reset();
 }
 
 void InfoWindow::handler(InfoData& infoData)
@@ -28,15 +29,6 @@ void InfoWindow::handler(InfoData& infoData)
 
     case InfoMode::Timer:
         {
-            static constexpr uint32_t SecondToUs = 1000000U;
-            uint32_t fullSeconds = infoData.pTimer->getElapsedTime() / SecondToUs;
-            static constexpr uint8_t MinuteToSeconds = 60U;
-            uint8_t secondsToDisplay = fullSeconds % MinuteToSeconds;
-            uint32_t fullMinutes = fullSeconds / MinuteToSeconds;
-            static constexpr uint8_t MaxMinutes = 100U;
-            uint8_t minutesToDisplay = fullMinutes % MaxMinutes;
-            bool displaySeconds = (secondsToDisplay != _lastSecondsToDisplay);
-            bool displayMinutes = (minutesToDisplay != _lastMinutesToDisplay);
             static constexpr uint8_t MinutesX = 0;
             static constexpr uint8_t MinutesY = 22;
             static constexpr uint8_t MinutesSize = 35;
@@ -45,10 +37,27 @@ void InfoWindow::handler(InfoData& infoData)
             static constexpr uint8_t FrameLength = 61;
             static constexpr uint8_t FrameHeight = 5;
             static constexpr uint8_t BarHeight = FrameHeight - 2;
-            if(infoData.mode != _previousMode)
+            static constexpr uint32_t SecondToUs = 1000000U;
+            bool displaySeconds{false};
+            bool displayMinutes{false};
+            static constexpr uint8_t MinuteToSeconds = 60U;
+            static constexpr uint8_t MaxMinutes = 100U;
+            if((infoData.mode != _previousMode) || infoData.timerResetRequest)
             {
-                //mode has been changed - draw all elements
-                //clear the whole area
+                //mode has been changed or request for timer reset
+                if(infoData.timerResetRequest)
+                {
+                    _timer.reset();
+                    infoData.timerResetRequest = false;
+                }
+                //calculate minutes and seconds to display
+                _elapsedTimeToDisplay = _timer.getElapsedTime();
+                uint32_t fullSeconds = _elapsedTimeToDisplay / SecondToUs;
+                _secondsToDisplay = fullSeconds % MinuteToSeconds;
+                uint32_t fullMinutes = fullSeconds / MinuteToSeconds;
+                _minutesToDisplay = fullMinutes % MaxMinutes;
+                //draw all elements
+                //first clear the whole area
                 _pDisplay->putRectangle(FromX, FromY, ToX, ToY, true);
                 //put seconds bar frame
                 _pDisplay->putFrame(FrameX, FrameY, FrameX + FrameLength - 1, FrameY + FrameHeight - 1);
@@ -77,9 +86,30 @@ void InfoWindow::handler(InfoData& infoData)
                 _pDisplay->putText(FrameX + RelPos30, FrameY + FrameHeight + dotRelPos, "30", FontAlien7);
                 _pDisplay->putText(FrameX + RelPos60, FrameY + FrameHeight + dotRelPos, "60", FontAlien7);
                 //draw bar proportional to elapsed seconds
-                _pDisplay->putRectangle(FrameX, FrameY + 1, FrameX + secondsToDisplay, FrameY + BarHeight);
+                _pDisplay->putRectangle(FrameX, FrameY + 1, FrameX + _secondsToDisplay, FrameY + BarHeight);
                 displayMinutes = true;  //request printing of minutes
-                displaySeconds = false;     //seconds bar has been already drawn
+            }
+            else
+            {
+                //another call in Timer mode (no need for redrawing all elements)
+                if(_timer.getElapsedTime() - _elapsedTimeToDisplay >= SecondToUs)
+                {
+                    //one second elapsed
+                    displaySeconds = true;
+                    _secondsToDisplay++;
+                    if(_secondsToDisplay >= MinuteToSeconds)
+                    {
+                        //one minute elapsed
+                        displayMinutes = true;
+                        _secondsToDisplay = 0;
+                        _minutesToDisplay++;
+                        if(_minutesToDisplay >= MaxMinutes)
+                        {
+                            _minutesToDisplay = 0;
+                        }
+                    }
+                    _elapsedTimeToDisplay += SecondToUs;
+                }
             }
 
             if(displayMinutes)
@@ -87,24 +117,24 @@ void InfoWindow::handler(InfoData& infoData)
                 //request for printing minutes
                 std::string minutesStr;
                 static constexpr uint8_t MaxSingleDigit = 9;
-                if(minutesToDisplay <= MaxSingleDigit)
+                if(_minutesToDisplay <= MaxSingleDigit)
                 {
                     minutesStr += " ";  //begin with a space for a single digit value
                 }
-                minutesStr += std::to_string(minutesToDisplay) + "'";   //add minutes value and the minute symbol
+                minutesStr += std::to_string(_minutesToDisplay) + "'";   //add minutes value and the minute symbol
                 _pDisplay->putText(MinutesX, MinutesY, minutesStr, FontTahoma20b, false, MinutesX + MinutesSize);
             }
 
             if(displaySeconds)
             {
                 //update the seconds bar
-                if(secondsToDisplay > 0)
+                if(_secondsToDisplay > 0)
                 {
                     //make the bar longer with a new second
                     uint8_t dotRelPos = 1;
-                    _pDisplay->putDot(FrameX + secondsToDisplay, FrameY + dotRelPos++);
-                    _pDisplay->putDot(FrameX + secondsToDisplay, FrameY + dotRelPos++);
-                    _pDisplay->putDot(FrameX + secondsToDisplay, FrameY + dotRelPos++);
+                    _pDisplay->putDot(FrameX + _secondsToDisplay, FrameY + dotRelPos++);
+                    _pDisplay->putDot(FrameX + _secondsToDisplay, FrameY + dotRelPos++);
+                    _pDisplay->putDot(FrameX + _secondsToDisplay, FrameY + dotRelPos++);
                 }
                 else
                 {
@@ -112,9 +142,6 @@ void InfoWindow::handler(InfoData& infoData)
                     _pDisplay->putRectangle(FrameX + 1, FrameY + 1, FrameX + FrameLength - 2, FrameY + BarHeight, true);
                 }
             }
-
-            _lastSecondsToDisplay = secondsToDisplay;
-            _lastMinutesToDisplay = minutesToDisplay;
         }
         break;
 

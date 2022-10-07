@@ -78,7 +78,7 @@ void mainLoop()
     Timer pilotsTimer;
     pilotsTimer.reset();
     InfoMode mainInfoMode{InfoMode::Timer};
-    InfoData infoData = {&pilotsTimer, mainInfoMode};
+    InfoData infoData = {mainInfoMode, false};
 
     //Status object
     Status status(pDisplay);
@@ -193,7 +193,7 @@ void mainLoop()
         if((menu.getItemId() == MenuId::Timer) &&
            (hatMid.hasBeenPressed()))
         {
-            infoData.pTimer->reset();
+            infoData.timerResetRequest = true;
         }
 
         //handle aircraft type change

@@ -20,8 +20,8 @@ enum class InfoMode : uint8_t
 
 struct InfoData
 {
-    Timer* pTimer;
     InfoMode mode;
+    bool timerResetRequest;
 };
 
 class InfoWindow
@@ -37,8 +37,10 @@ private:
     static constexpr uint8_t FromY = 16;
     static constexpr uint8_t ToX = 127;
     static constexpr uint8_t ToY = 46;
-    uint8_t _lastSecondsToDisplay{60};
-    uint8_t _lastMinutesToDisplay{100};
+    uint8_t _secondsToDisplay{0};
+    uint8_t _minutesToDisplay{0};
+    uint32_t _elapsedTimeToDisplay{0};
+    Timer _timer;   //pilot's timer
 };
 
 
