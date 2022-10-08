@@ -148,14 +148,14 @@ void mainLoop()
             if(status.getAircraftType() == AircraftType::Glider)
             {
                 //glider: use slide pot for air brakes
-                gameController.data.Rx = scale<uint16_t, uint16_t>(0, Max12Bit, throttleFilter.getMedian(), 0, Max15Bit);
+                gameController.data.Ry = scale<uint16_t, uint16_t>(0, Max12Bit, throttleFilter.getMedian(), 0, Max15Bit);
                 gameController.data.slider = 0;
             }
             else
             {
                 //anything but a glider - use slide pot for throttle
                 gameController.data.slider = scale<uint16_t, uint16_t>(0, Max12Bit, throttleFilter.getMedian(), 0, Max15Bit);
-                gameController.data.Rx = 0;
+                gameController.data.Ry = 0;
             }
             gameController.data.dial = scale<uint16_t, uint16_t>(0, Max12Bit, propellerFilter.getMedian(), 0, Max15Bit);
             gameController.data.Z = scale<uint16_t, int16_t>(0, Max12Bit, mixtureFilter.getMedian(), -Max15Bit, Max15Bit);
