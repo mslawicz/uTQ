@@ -65,6 +65,7 @@ void mainLoop()
     menu.registerItem(MenuId::Timer, "%Reset timer");
     menu.registerItem(MenuId::AircraftType, "$Aircraft type");
     menu.registerItem(MenuId::Heading, "$HDG %AP");
+    menu.registerItem(MenuId::Altitude, "$ALT #VS %AP");
 
     //pushbutton objects
     PushButton menuLeft(HAT_SET_GPIO_Port, HAT_SET_Pin);
@@ -174,6 +175,15 @@ void mainLoop()
             {
                 gameController.setButton(GameControllerButton::headingDec, HAL_GPIO_ReadPin(HAT_LEFT_GPIO_Port, HAT_LEFT_Pin) == GPIO_PinState::GPIO_PIN_RESET);   //dec heading
                 gameController.setButton(GameControllerButton::headingInc, HAL_GPIO_ReadPin(HAT_RIGHT_GPIO_Port, HAT_RIGHT_Pin) == GPIO_PinState::GPIO_PIN_RESET);  //inc heading
+                gameController.setButton(GameControllerButton::apHeading, HAL_GPIO_ReadPin(HAT_MID_GPIO_Port, HAT_MID_Pin) == GPIO_PinState::GPIO_PIN_RESET);  //AP heading mode
+            }
+            if(menu.getItemId() == MenuId::Altitude)
+            {
+                gameController.setButton(GameControllerButton::altitudeDec, HAL_GPIO_ReadPin(HAT_LEFT_GPIO_Port, HAT_LEFT_Pin) == GPIO_PinState::GPIO_PIN_RESET);   //dec altitude
+                gameController.setButton(GameControllerButton::altitudeInc, HAL_GPIO_ReadPin(HAT_RIGHT_GPIO_Port, HAT_RIGHT_Pin) == GPIO_PinState::GPIO_PIN_RESET);  //inc altitude
+                gameController.setButton(GameControllerButton::vsDec, HAL_GPIO_ReadPin(HAT_UP_GPIO_Port, HAT_UP_Pin) == GPIO_PinState::GPIO_PIN_RESET);   //dec vs
+                gameController.setButton(GameControllerButton::vsInc, HAL_GPIO_ReadPin(HAT_DOWN_GPIO_Port, HAT_DOWN_Pin) == GPIO_PinState::GPIO_PIN_RESET);  //inc vs
+                gameController.setButton(GameControllerButton::apVs, HAL_GPIO_ReadPin(HAT_MID_GPIO_Port, HAT_MID_Pin) == GPIO_PinState::GPIO_PIN_RESET);  //AP vs mode
             }
 
             gameController.sendReport();

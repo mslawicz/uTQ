@@ -39,7 +39,13 @@ enum class GameControllerButton : uint8_t
     leftToggle,
     rightToggle,
     headingDec,
-    headingInc
+    headingInc,
+    apHeading,
+    altitudeDec,
+    altitudeInc,
+    vsDec,
+    vsInc,
+    apVs
 };
 
 class GameController

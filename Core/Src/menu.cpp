@@ -29,8 +29,19 @@ void Menu::display()
 void Menu::changeItem(int8_t change)
 {
     auto menuSize = _items.size();
-    if(menuSize > 1)
+    if(menuSize < 2)
     {
-        _itemIdx = (_itemIdx + change) % menuSize;
+        //0 or 1 element - do nothing
+        return;
     }
+    int8_t newIdx = _itemIdx + change;
+    if(newIdx >= static_cast<int8_t>(menuSize))
+    {
+        newIdx -= menuSize;
+    }
+    else if(newIdx < 0)
+    {
+        newIdx += menuSize;
+    }
+    _itemIdx = static_cast<uint8_t>(newIdx);
 }
