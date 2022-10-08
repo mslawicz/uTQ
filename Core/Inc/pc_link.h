@@ -17,12 +17,12 @@ struct GameControllerDataType
 {
     int16_t X;
     int16_t Y;
-    int16_t Z;
+    int16_t Z;          //mixture
     int16_t Rz;
-    uint16_t Rx;
+    uint16_t Rx;        //spoilers (air brakes)
     uint16_t Ry;
-    uint16_t slider;
-    uint16_t dial;
+    uint16_t slider;    //throttle
+    uint16_t dial;      //propeller
     uint8_t hat;
     uint32_t buttons;
 };
