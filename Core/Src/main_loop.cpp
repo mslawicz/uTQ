@@ -35,7 +35,7 @@ GameControllerDataType mon_joy_data;
 void mainLoop()
 {
     constexpr uint32_t HeartbeatPeriod = 500000U;
-    constexpr size_t AdcMedianFilterSize = 7;
+    constexpr size_t AdcMedianFilterSize = 11;
     constexpr uint32_t AdcPeriod = GameController::ReportInterval / AdcMedianFilterSize;
     bool reverseOn = false;     //state of thrust reverser
     bool reverseOffArmed = false;    //automatic reverse off flag
