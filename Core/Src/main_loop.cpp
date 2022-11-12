@@ -168,7 +168,6 @@ void mainLoop()
             gameController.setButton(GameControllerButton::gearUp, HAL_GPIO_ReadPin(GEAR_UP_GPIO_Port, GEAR_UP_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             gameController.setButton(GameControllerButton::gearDown, HAL_GPIO_ReadPin(GEAR_DOWN_GPIO_Port, GEAR_DOWN_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             gameController.setButton(GameControllerButton::blueButton, HAL_GPIO_ReadPin(PB_BLUE_GPIO_Port, PB_BLUE_Pin) == GPIO_PinState::GPIO_PIN_RESET);
-            gameController.setButton(GameControllerButton::greenButton, HAL_GPIO_ReadPin(PB_GREEN_GPIO_Port, PB_GREEN_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             gameController.setButton(GameControllerButton::leftToggle, HAL_GPIO_ReadPin(TOGGLE_LEFT_GPIO_Port, TOGGLE_LEFT_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             gameController.setButton(GameControllerButton::rightToggle, HAL_GPIO_ReadPin(TOGGLE_RIGHT_GPIO_Port, TOGGLE_RIGHT_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             if(menu.getItemId() == MenuId::Heading)
@@ -184,6 +183,15 @@ void mainLoop()
                 gameController.setButton(GameControllerButton::vsDec, HAL_GPIO_ReadPin(HAT_UP_GPIO_Port, HAT_UP_Pin) == GPIO_PinState::GPIO_PIN_RESET);   //dec vs
                 gameController.setButton(GameControllerButton::vsInc, HAL_GPIO_ReadPin(HAT_DOWN_GPIO_Port, HAT_DOWN_Pin) == GPIO_PinState::GPIO_PIN_RESET);  //inc vs
                 gameController.setButton(GameControllerButton::apVs, HAL_GPIO_ReadPin(HAT_MID_GPIO_Port, HAT_MID_Pin) == GPIO_PinState::GPIO_PIN_RESET);  //AP vs mode
+            }
+            if(status.getAircraftType() == AircraftType::Glider)
+            {
+                gameController.setButton(GameControllerButton::towRelease, HAL_GPIO_ReadPin(PB_GREEN_GPIO_Port, PB_GREEN_Pin) == GPIO_PinState::GPIO_PIN_RESET);
+            }
+            else
+            {
+                //not a glider
+                gameController.setButton(GameControllerButton::greenButton, HAL_GPIO_ReadPin(PB_GREEN_GPIO_Port, PB_GREEN_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             }
 
             gameController.sendReport();

@@ -35,7 +35,7 @@ enum class GameControllerButton : uint8_t
     gearUp,
     gearDown,
     blueButton,
-    greenButton,
+    towRelease,
     leftToggle,
     rightToggle,
     headingDec,
@@ -45,7 +45,8 @@ enum class GameControllerButton : uint8_t
     altitudeInc,
     vsDec,
     vsInc,
-    apVs
+    apVs,
+    greenButton
 };
 
 class GameController
