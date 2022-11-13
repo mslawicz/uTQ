@@ -8,28 +8,28 @@
 #ifndef INC_MEDIAN_FILTER_H_
 #define INC_MEDIAN_FILTER_H_
 
-#include <vector>
+#define MED_FLT_SIZE    11
+
+#include <array>
 
 template<class T>
 class MedianFilter
 {
 public:
-    MedianFilter(const size_t size);
+    MedianFilter();
     void filter(T newValue);
-    T getMedian() const { return _sortedBuffer[_size / 2]; }
+    T getMedian() const { return _sortedBuffer[MED_FLT_SIZE / 2]; }
 private:
-    size_t _size;
-    std::vector<T> _unsortedBuffer;
-    std::vector<T> _sortedBuffer;
+    std::array<T, MED_FLT_SIZE> _unsortedBuffer;
+    std::array<T, MED_FLT_SIZE> _sortedBuffer;
     size_t _currentIndex{ 0 };
 };
 
 template<class T>
-inline MedianFilter<T>::MedianFilter(const size_t size) :
-    _size(size)
+inline MedianFilter<T>::MedianFilter()
 {
-    _unsortedBuffer.resize(_size, static_cast<T>(0));
-    _sortedBuffer.resize(_size, static_cast<T>(0));
+    _unsortedBuffer.fill(static_cast<T>(0));
+    _sortedBuffer.fill(static_cast<T>(0));
 }
 
 template<class T>
@@ -38,10 +38,10 @@ inline void MedianFilter<T>::filter(T newValue)
     //store the new value in the circular (unsorted) buffer
     T oldestValue = _unsortedBuffer[_currentIndex];
     _unsortedBuffer[_currentIndex] = newValue;
-    _currentIndex = (_currentIndex + 1) % _size;
+    _currentIndex = (_currentIndex + 1) % MED_FLT_SIZE;
 
     //replace the oldest value in the sorted buffer and replace it with the new value
-    size_t index = _size / 2;
+    size_t index = MED_FLT_SIZE / 2;
     while (_sortedBuffer[index] != oldestValue)
     {
         index += (_sortedBuffer[index] > oldestValue) ? -1 : 1;
@@ -57,7 +57,7 @@ inline void MedianFilter<T>::filter(T newValue)
         _sortedBuffer[index] = tempValue;
         index--;
     }
-    while ((index < _size - 1) && (_sortedBuffer[index + 1] < _sortedBuffer[index]))
+    while ((index < MED_FLT_SIZE - 1) && (_sortedBuffer[index + 1] < _sortedBuffer[index]))
     {
         tempValue = _sortedBuffer[index + 1];
         _sortedBuffer[index + 1] = _sortedBuffer[index];

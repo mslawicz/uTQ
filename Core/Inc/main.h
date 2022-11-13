@@ -87,6 +87,8 @@ void Error_Handler(void);
 #define DIS_RESET_GPIO_Port GPIOB
 #define GEAR_DOWN_Pin GPIO_PIN_7
 #define GEAR_DOWN_GPIO_Port GPIOC
+#define TEST_Pin GPIO_PIN_8
+#define TEST_GPIO_Port GPIOC
 #define PB_GREEN_Pin GPIO_PIN_8
 #define PB_GREEN_GPIO_Port GPIOA
 #define TOGGLE_RIGHT_Pin GPIO_PIN_9

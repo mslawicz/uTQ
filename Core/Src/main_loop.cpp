@@ -35,8 +35,7 @@ GameControllerDataType mon_joy_data;
 void mainLoop()
 {
     constexpr uint32_t HeartbeatPeriod = 500000U;
-    constexpr size_t AdcMedianFilterSize = 11;
-    constexpr uint32_t AdcPeriod = GameController::ReportInterval / AdcMedianFilterSize;
+    constexpr uint32_t AdcPeriod = (GameController::ReportInterval / MED_FLT_SIZE) << 1;
     bool reverseOn = false;     //state of thrust reverser
     bool reverseOffArmed = false;    //automatic reverse off flag
     uint8_t lastMenuItemIdx = 0xFF; //remembers the previous menu item index
@@ -56,9 +55,9 @@ void mainLoop()
     pDisplay = new SH1106(pHspi2, DIS_CS_GPIO_Port, DIS_CS_Pin, DIS_DC_GPIO_Port, DIS_DC_Pin, DIS_RESET_GPIO_Port, DIS_RESET_Pin);     //OLED display
 
     //ADC filter objects
-    MedianFilter<uint16_t> throttleFilter(AdcMedianFilterSize);
-    MedianFilter<uint16_t> propellerFilter(AdcMedianFilterSize);
-    MedianFilter<uint16_t> mixtureFilter(AdcMedianFilterSize);
+    MedianFilter<uint16_t> throttleFilter;
+    MedianFilter<uint16_t> propellerFilter;
+    MedianFilter<uint16_t> mixtureFilter;
 
     //display menu
     Menu menu(pDisplay);
