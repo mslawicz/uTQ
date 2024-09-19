@@ -91,6 +91,7 @@ void mainLoop()
         //process ADC conversions
         if(adcDataReady && adcTimer.hasElapsed(AdcPeriod))
         {
+            HAL_GPIO_WritePin(TEST2_GPIO_Port, TEST2_Pin, GPIO_PIN_SET);	//XXX test
             adcDataReady = false;
 
 #ifdef MONITOR
@@ -106,6 +107,7 @@ void mainLoop()
             HAL_ADC_Start_DMA(pHadc, (uint32_t*)adcConvBuffer, pHadc->Init.NbrOfConversion);
 
             adcTimer.reset();
+            HAL_GPIO_WritePin(TEST2_GPIO_Port, TEST2_Pin, GPIO_PIN_RESET); //XXX test
         }
 
         //process heartbeat LED
@@ -143,6 +145,7 @@ void mainLoop()
         //process USB reports
         if(gameCtrlTimer.hasElapsed(GameController::ReportInterval))
         {
+        	HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_SET);	//XXX test
             //set game controller axes
             if(status.getAircraftType() == AircraftType::Glider)
             {
@@ -199,8 +202,10 @@ void mainLoop()
 #ifdef MONITOR
             mon_joy_data.slider = gameController.data.slider;
 #endif  //MONITOR
+            HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_RESET);	//XXX test
         }
 
+        HAL_GPIO_WritePin(TEST3_GPIO_Port, TEST3_Pin, GPIO_PIN_SET);	//XXX test
         //handle display actions
         if(pDisplay != nullptr)
         {
@@ -254,6 +259,7 @@ void mainLoop()
             //handle status
             status.handler();
         }
+        HAL_GPIO_WritePin(TEST3_GPIO_Port, TEST3_Pin, GPIO_PIN_RESET);	//XXX test
     }
 }
 

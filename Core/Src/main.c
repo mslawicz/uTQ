@@ -424,7 +424,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(DIS_CS_GPIO_Port, DIS_CS_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(TEST_GPIO_Port, TEST_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, TEST3_Pin|TEST1_Pin|TEST2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(DIS_CSA15_GPIO_Port, DIS_CSA15_Pin, GPIO_PIN_SET);
@@ -465,12 +465,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : TEST_Pin */
-  GPIO_InitStruct.Pin = TEST_Pin;
+  /*Configure GPIO pins : TEST3_Pin TEST1_Pin TEST2_Pin */
+  GPIO_InitStruct.Pin = TEST3_Pin|TEST1_Pin|TEST2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(TEST_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PB_GREEN_Pin TOGGLE_RIGHT_Pin FLAPS_UP_Pin */
   GPIO_InitStruct.Pin = PB_GREEN_Pin|TOGGLE_RIGHT_Pin|FLAPS_UP_Pin;
