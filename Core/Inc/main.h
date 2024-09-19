@@ -119,6 +119,7 @@ void Error_Handler(void);
 #define PB_BLUE_GPIO_Port GPIOB
 #define GEAR_UP_Pin GPIO_PIN_6
 #define GEAR_UP_GPIO_Port GPIOB
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
