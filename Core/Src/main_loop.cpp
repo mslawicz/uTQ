@@ -29,7 +29,6 @@ Display* pDisplay = nullptr;
 
 #ifdef MONITOR
 uint16_t mon_adc[MAX_ADC_CH];
-GameControllerDataType mon_joy_data;
 #endif
 
 void mainLoop()
@@ -100,6 +99,10 @@ void mainLoop()
 
             //filter ADC data
             throttleFilter.filter(Max12Bit - adcConvBuffer[AdcCh::throttle]);
+            if(adcConvBuffer[AdcCh::propeller] < 4000)
+            {
+            	propellerFilter.filter(adcConvBuffer[AdcCh::propeller]);
+            }
             propellerFilter.filter(adcConvBuffer[AdcCh::propeller]);
             mixtureFilter.filter(adcConvBuffer[AdcCh::mixture]);
 
@@ -200,7 +203,7 @@ void mainLoop()
             gameCtrlTimer.reset();
 
 #ifdef MONITOR
-            mon_joy_data.slider = gameController.data.slider;
+
 #endif  //MONITOR
             HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_RESET);	//XXX test
         }
