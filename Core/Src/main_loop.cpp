@@ -199,6 +199,13 @@ void mainLoop()
                 gameController.setButton(GameControllerButton::greenButton, HAL_GPIO_ReadPin(PB_GREEN_GPIO_Port, PB_GREEN_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             }
 
+            // unused data members
+            gameController.data.X = 0;
+            gameController.data.Y = 0;
+            gameController.data.Rx = 0;
+            gameController.data.Rz = 0;
+            gameController.data.hat = 0;
+
             gameController.sendReport();
             gameCtrlTimer.reset();
 
