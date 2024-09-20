@@ -103,8 +103,6 @@ void Error_Handler(void);
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
 #define TCK_GPIO_Port GPIOA
-#define DIS_CSA15_Pin GPIO_PIN_15
-#define DIS_CSA15_GPIO_Port GPIOA
 #define HAT_SET_Pin GPIO_PIN_10
 #define HAT_SET_GPIO_Port GPIOC
 #define HAT_RST_Pin GPIO_PIN_11
