@@ -77,13 +77,11 @@ void SH1106::handler()
                 {
                     //this page must be refreshed
                     uint8_t startColumn = displayData[_pageNo].refreshFrom + 2;
-                    std::vector<uint8_t> addrData =     //display memory address
-                    {
-                            static_cast<uint8_t>(startColumn & 0x0F),  //lower column value
-                            static_cast<uint8_t>(0x10 | ((startColumn >> 4)& 0x0F)),   //higher column value
-                            static_cast<uint8_t>(0xB0 | _pageNo)    //page value
-                    };
-                    write(SH1106Control::command, addrData.data(), addrData.size());
+                    _addrData.clear();
+                    _addrData.push_back(static_cast<uint8_t>(startColumn & 0x0F));	//lower column value
+                    _addrData.push_back(static_cast<uint8_t>(0x10 | ((startColumn >> 4)& 0x0F)));	//higher column value
+                    _addrData.push_back(static_cast<uint8_t>(0xB0 | _pageNo));	//page value
+                    write(SH1106Control::command, _addrData.data(), _addrData.size());
                     _state = SH1106State::sendData;     //display data to be sent in the next transaction
                     break;
                 }

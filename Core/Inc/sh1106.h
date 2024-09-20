@@ -79,6 +79,7 @@ private:
     std::array<SH1106Page, NoOfPages> displayData;
     bool _refreshRequest{false};
     uint8_t _pageNo{0};
+    std::vector<uint8_t> _addrData;     //vector for display memory address command
 };
 
 
