@@ -75,6 +75,10 @@ void Error_Handler(void);
 #define USART_RX_GPIO_Port GPIOA
 #define LD2_Pin GPIO_PIN_5
 #define LD2_GPIO_Port GPIOA
+#define MINI_JOY_X_Pin GPIO_PIN_6
+#define MINI_JOY_X_GPIO_Port GPIOA
+#define MINI_JOY_Y_Pin GPIO_PIN_7
+#define MINI_JOY_Y_GPIO_Port GPIOA
 #define FLAPS_DOWN_Pin GPIO_PIN_4
 #define FLAPS_DOWN_GPIO_Port GPIOC
 #define DIS_DC_Pin GPIO_PIN_1
@@ -83,6 +87,8 @@ void Error_Handler(void);
 #define DIS_CS_GPIO_Port GPIOB
 #define PB_RED_Pin GPIO_PIN_10
 #define PB_RED_GPIO_Port GPIOB
+#define MINI_JOY_PB_Pin GPIO_PIN_12
+#define MINI_JOY_PB_GPIO_Port GPIOB
 #define DIS_RESET_Pin GPIO_PIN_14
 #define DIS_RESET_GPIO_Port GPIOB
 #define TEST3_Pin GPIO_PIN_6

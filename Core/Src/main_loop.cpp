@@ -149,17 +149,19 @@ void mainLoop()
             if(status.getAircraftType() == AircraftType::Glider)
             {
                 //glider: use slide pot for air brakes
-                gameController.data.Ry = scale<uint16_t, uint16_t>(0, Max12Bit, throttleFilter.getMedian(), 0, Max15Bit);
+                gameController.data.Rz = scale<uint16_t, uint16_t>(0, Max12Bit, throttleFilter.getMedian(), -Max15Bit, Max15Bit);
                 gameController.data.slider = 0;
             }
             else
             {
                 //anything but a glider - use slide pot for throttle
                 gameController.data.slider = scale<uint16_t, uint16_t>(0, Max12Bit, throttleFilter.getMedian(), 0, Max15Bit);
-                gameController.data.Ry = 0;
+                gameController.data.Rz = 0;
             }
             gameController.data.dial = scale<uint16_t, uint16_t>(0, Max12Bit, propellerFilter.getMedian(), 0, Max15Bit);
             gameController.data.Z = scale<uint16_t, int16_t>(0, Max12Bit, mixtureFilter.getMedian(), -Max15Bit, Max15Bit);
+            gameController.data.Rx = scale<uint16_t, int16_t>(0, Max12Bit, adcConvBuffer[miniJoyX], 0, Max15Bit);
+            gameController.data.Ry = scale<uint16_t, int16_t>(0, Max12Bit, adcConvBuffer[miniJoyY], 0, Max15Bit);
 
             //set game controller buttons
             gameController.data.buttons = 0;
@@ -194,12 +196,11 @@ void mainLoop()
                 //not a glider
                 gameController.setButton(GameControllerButton::greenButton, HAL_GPIO_ReadPin(PB_GREEN_GPIO_Port, PB_GREEN_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             }
+            gameController.setButton(GameControllerButton::miniJoyPB, HAL_GPIO_ReadPin(MINI_JOY_PB_GPIO_Port, MINI_JOY_PB_Pin) == GPIO_PinState::GPIO_PIN_RESET);
 
             // unused data members
             gameController.data.X = 0;
             gameController.data.Y = 0;
-            gameController.data.Rx = 0;
-            gameController.data.Rz = 0;
             gameController.data.hat = 0;
 
             gameController.sendReport();
