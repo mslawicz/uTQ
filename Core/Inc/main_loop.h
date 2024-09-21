@@ -14,10 +14,7 @@ enum AdcCh
 {
     throttle,
     propeller,
-    mixture,
-    leftBrake,
-    rightBrake,
-    spare
+    mixture
 };
 
 #endif /* INC_MAIN_LOOP_H_ */

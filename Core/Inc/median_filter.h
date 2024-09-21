@@ -8,7 +8,7 @@
 #ifndef INC_MEDIAN_FILTER_H_
 #define INC_MEDIAN_FILTER_H_
 
-#define MED_FLT_SIZE    11
+#define MED_FLT_SIZE    21
 
 #include <array>
 

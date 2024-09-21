@@ -90,7 +90,6 @@ void mainLoop()
         //process ADC conversions
         if(adcDataReady && adcTimer.hasElapsed(AdcPeriod))
         {
-            HAL_GPIO_WritePin(TEST2_GPIO_Port, TEST2_Pin, GPIO_PIN_SET);	//XXX test
             adcDataReady = false;
 
 #ifdef MONITOR
@@ -98,19 +97,17 @@ void mainLoop()
 #endif //MONITOR
 
             //filter ADC data
+            HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_SET);	//XXX test
             throttleFilter.filter(Max12Bit - adcConvBuffer[AdcCh::throttle]);
-            if(adcConvBuffer[AdcCh::propeller] < 4000)
-            {
-            	propellerFilter.filter(adcConvBuffer[AdcCh::propeller]);
-            }
             propellerFilter.filter(adcConvBuffer[AdcCh::propeller]);
             mixtureFilter.filter(adcConvBuffer[AdcCh::mixture]);
 
             /* request next conversions of analog channels */
+            HAL_GPIO_WritePin(TEST2_GPIO_Port, TEST2_Pin, GPIO_PIN_SET);	//XXX test
             HAL_ADC_Start_DMA(pHadc, (uint32_t*)adcConvBuffer, pHadc->Init.NbrOfConversion);
+            HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_RESET);	//XXX test
 
             adcTimer.reset();
-            HAL_GPIO_WritePin(TEST2_GPIO_Port, TEST2_Pin, GPIO_PIN_RESET); //XXX test
         }
 
         //process heartbeat LED
@@ -148,7 +145,6 @@ void mainLoop()
         //process USB reports
         if(gameCtrlTimer.hasElapsed(GameController::ReportInterval))
         {
-        	HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_SET);	//XXX test
             //set game controller axes
             if(status.getAircraftType() == AircraftType::Glider)
             {
@@ -212,10 +208,8 @@ void mainLoop()
 #ifdef MONITOR
 
 #endif  //MONITOR
-            HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_RESET);	//XXX test
         }
 
-        HAL_GPIO_WritePin(TEST3_GPIO_Port, TEST3_Pin, GPIO_PIN_SET);	//XXX test
         //handle display actions
         if(pDisplay != nullptr)
         {
@@ -269,7 +263,6 @@ void mainLoop()
             //handle status
             status.handler();
         }
-        HAL_GPIO_WritePin(TEST3_GPIO_Port, TEST3_Pin, GPIO_PIN_RESET);	//XXX test
     }
 }
 
@@ -285,6 +278,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     if(hadc == pHadc)
     {
         adcDataReady = true;
+        HAL_GPIO_WritePin(TEST2_GPIO_Port, TEST2_Pin, GPIO_PIN_RESET); //XXX test
     }
 }
 
