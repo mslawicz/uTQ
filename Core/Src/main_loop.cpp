@@ -94,7 +94,6 @@ void mainLoop()
 #endif //MONITOR
 
             //filter ADC data
-            HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_SET);	//XXX test
             throttleFiltered += AlphaEMA * (1.0f - static_cast<float>(adcConvBuffer[throttle]) / Max12BitF - throttleFiltered);
             propellerFiltered += AlphaEMA * (static_cast<float>(adcConvBuffer[propeller]) / Max12BitF - propellerFiltered);
             mixtureFiltered += AlphaEMA * (static_cast<float>(adcConvBuffer[mixture]) / Max12BitF - mixtureFiltered);
@@ -102,9 +101,7 @@ void mainLoop()
             miniJoyYFiltered += AlphaEMA * (static_cast<float>(adcConvBuffer[miniJoyY]) / Max12BitF - miniJoyYFiltered);
 
             /* request next conversions of analog channels */
-            HAL_GPIO_WritePin(TEST2_GPIO_Port, TEST2_Pin, GPIO_PIN_SET);	//XXX test
             HAL_ADC_Start_DMA(pHadc, (uint32_t*)adcConvBuffer, pHadc->Init.NbrOfConversion);
-            HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_RESET);	//XXX test
 
             adcTimer.reset();
         }
@@ -142,15 +139,14 @@ void mainLoop()
         }
 
         //process linear brakes
-        float brakeLeft = ((miniJoyXFiltered < 0.5f) ? 2.0f * (0.5f - miniJoyXFiltered) : 0) +
-        						  ((miniJoyYFiltered > 0.5f) ? 2.0f * (miniJoyYFiltered - 0.5f) : 0);
-        float brakeRight = ((miniJoyXFiltered < 0.5f) ? 2.0f * (0.5f - miniJoyXFiltered) : 0) +
-        						  ((miniJoyYFiltered < 0.5f) ? 2.0f * (0.5f - miniJoyYFiltered) : 0);
+        float brakeLeft = ((miniJoyXFiltered < 0.5f) ? 2.0f * (0.5f - miniJoyXFiltered) : 0) +		//mini joystick moved forward
+        						  ((miniJoyYFiltered > 0.5f) ? 2.0f * (miniJoyYFiltered - 0.5f) : 0);			//mini joystick moved to left
+        float brakeRight = ((miniJoyXFiltered < 0.5f) ? 2.0f * (0.5f - miniJoyXFiltered) : 0) +		//mini joystick moved forward
+        						  ((miniJoyYFiltered < 0.5f) ? 2.0f * (0.5f - miniJoyYFiltered) : 0);			//mini joystick moved to right
 
         //process USB reports
         if(gameCtrlTimer.hasElapsed(GameController::ReportInterval))
         {
-        	HAL_GPIO_WritePin(TEST3_GPIO_Port, TEST3_Pin, GPIO_PIN_SET);	//XXX test
             //set game controller axes
             if(status.getAircraftType() == AircraftType::Glider)
             {
@@ -215,7 +211,6 @@ void mainLoop()
 #ifdef MONITOR
 
 #endif  //MONITOR
-            HAL_GPIO_WritePin(TEST3_GPIO_Port, TEST3_Pin, GPIO_PIN_RESET);	//XXX test
         }
 
         //handle display actions
@@ -286,7 +281,6 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     if(hadc == pHadc)
     {
         adcDataReady = true;
-        HAL_GPIO_WritePin(TEST2_GPIO_Port, TEST2_Pin, GPIO_PIN_RESET); //XXX test
     }
 }
 
