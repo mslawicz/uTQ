@@ -141,6 +141,12 @@ void mainLoop()
             infoData.mode = mainInfoMode;
         }
 
+        //process linear brakes
+        float brakeLeft = ((miniJoyXFiltered < 0.5f) ? 2.0f * (0.5f - miniJoyXFiltered) : 0) +
+        						  ((miniJoyYFiltered > 0.5f) ? 2.0f * (miniJoyYFiltered - 0.5f) : 0);
+        float brakeRight = ((miniJoyXFiltered < 0.5f) ? 2.0f * (0.5f - miniJoyXFiltered) : 0) +
+        						  ((miniJoyYFiltered < 0.5f) ? 2.0f * (0.5f - miniJoyYFiltered) : 0);
+
         //process USB reports
         if(gameCtrlTimer.hasElapsed(GameController::ReportInterval))
         {
@@ -160,8 +166,8 @@ void mainLoop()
             }
             gameController.data.dial = scale<float, uint16_t>(0, 1.0f, propellerFiltered, 0, Max15Bit);
             gameController.data.Z = scale<float, int16_t>(0, 1.0f, mixtureFiltered, -Max15Bit, Max15Bit);
-            gameController.data.Rx = scale<float, uint16_t>(0, 1.0f, miniJoyXFiltered, 0, Max15Bit);
-            gameController.data.Ry = scale<float, uint16_t>(0, 1.0f, miniJoyYFiltered, 0, Max15Bit);
+            gameController.data.Rx = scale<float, uint16_t>(0.05f, 1.0f, brakeLeft, 0, Max15Bit);
+            gameController.data.Ry = scale<float, uint16_t>(0.05f, 1.0f, brakeRight, 0, Max15Bit);
 
             //set game controller buttons
             gameController.data.buttons = 0;
