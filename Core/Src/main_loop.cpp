@@ -14,7 +14,6 @@
 #include "constant.h"
 #include "logger.h"
 #include "monitor.h"
-#include "median_filter.h"
 #include "sh1106.h"
 #include "menu.h"
 #include "push_button.h"
@@ -26,6 +25,11 @@ SPI_HandleTypeDef* pHspi2;   //pointer to SPI2 object
 uint16_t adcConvBuffer[MAX_ADC_CH]; //buffer for ADC conversion results
 bool adcDataReady = true;
 Display* pDisplay = nullptr;
+static float throttleFiltered = 0;
+static float propellerFiltered = 0;
+static float mixtureFiltered = 0;
+static float miniJoyXFiltered = 0;
+static float miniJoyYFiltered = 0;
 
 #ifdef MONITOR
 uint16_t mon_adc[MAX_ADC_CH];
@@ -34,7 +38,7 @@ uint16_t mon_adc[MAX_ADC_CH];
 void mainLoop()
 {
     constexpr uint32_t HeartbeatPeriod = 500000U;
-    constexpr uint32_t AdcPeriod = (GameController::ReportInterval / MED_FLT_SIZE) << 1;
+    constexpr uint32_t AdcPeriod = GameController::ReportInterval / 10;
     bool reverseOn = false;     //state of thrust reverser
     bool reverseOffArmed = false;    //automatic reverse off flag
     uint8_t lastMenuItemIdx = 0xFF; //remembers the previous menu item index
@@ -52,11 +56,6 @@ void mainLoop()
     GameController gameController;  //USB link-to-PC object (class custom HID - joystick)
 
     pDisplay = new SH1106(pHspi2, DIS_CS_GPIO_Port, DIS_CS_Pin, DIS_DC_GPIO_Port, DIS_DC_Pin, DIS_RESET_GPIO_Port, DIS_RESET_Pin);     //OLED display
-
-    //ADC filter objects
-    MedianFilter<uint16_t> throttleFilter;
-    MedianFilter<uint16_t> propellerFilter;
-    MedianFilter<uint16_t> mixtureFilter;
 
     //display menu
     Menu menu(pDisplay);
@@ -82,8 +81,6 @@ void mainLoop()
     //Status object
     Status status(pDisplay);
 
-
-
     /* main forever loop */
     while(true)
     {
@@ -98,9 +95,11 @@ void mainLoop()
 
             //filter ADC data
             HAL_GPIO_WritePin(TEST1_GPIO_Port, TEST1_Pin, GPIO_PIN_SET);	//XXX test
-            throttleFilter.filter(Max12Bit - adcConvBuffer[AdcCh::throttle]);
-            propellerFilter.filter(adcConvBuffer[AdcCh::propeller]);
-            mixtureFilter.filter(adcConvBuffer[AdcCh::mixture]);
+            throttleFiltered += AlphaEMA * (1.0f - static_cast<float>(adcConvBuffer[throttle]) / Max12BitF - throttleFiltered);
+            propellerFiltered += AlphaEMA * (static_cast<float>(adcConvBuffer[propeller]) / Max12BitF - propellerFiltered);
+            mixtureFiltered += AlphaEMA * (static_cast<float>(adcConvBuffer[mixture]) / Max12BitF - mixtureFiltered);
+            miniJoyXFiltered += AlphaEMA * (static_cast<float>(adcConvBuffer[miniJoyX]) / Max12BitF - miniJoyXFiltered);
+            miniJoyYFiltered += AlphaEMA * (static_cast<float>(adcConvBuffer[miniJoyY]) / Max12BitF - miniJoyYFiltered);
 
             /* request next conversions of analog channels */
             HAL_GPIO_WritePin(TEST2_GPIO_Port, TEST2_Pin, GPIO_PIN_SET);	//XXX test
@@ -123,19 +122,19 @@ void mainLoop()
         if((status.getAircraftType() == AircraftType::Engine) &&
            (reverseOn == false) &&      //reverser is off
            (HAL_GPIO_ReadPin(PB_RED_GPIO_Port, PB_RED_Pin) == GPIO_PinState::GPIO_PIN_RESET) &&       //reverse button is pressed
-           (throttleFilter.getMedian() < ADC10Pct))     //throttle is < 10%
+           (throttleFiltered < ADC10Pct))     //throttle is < 10%
         {
             reverseOn = true;
             reverseOffArmed = false;
             infoData.mode = InfoMode::Reverser;
         }
         if((reverseOn == true) &&   //reverser is on
-           (throttleFilter.getMedian() > ADC20Pct))     //throttle > 20%
+           (throttleFiltered > ADC20Pct))     //throttle > 20%
         {
             reverseOffArmed = true;
         }
         if((reverseOffArmed == true) &&     //reverser auto off is armed
-           (throttleFilter.getMedian() < ADC10Pct))     //throttle < 10%
+           (throttleFiltered < ADC10Pct))     //throttle < 10%
         {
             reverseOn = false;
             reverseOffArmed = false;
@@ -145,23 +144,24 @@ void mainLoop()
         //process USB reports
         if(gameCtrlTimer.hasElapsed(GameController::ReportInterval))
         {
+        	HAL_GPIO_WritePin(TEST3_GPIO_Port, TEST3_Pin, GPIO_PIN_SET);	//XXX test
             //set game controller axes
             if(status.getAircraftType() == AircraftType::Glider)
             {
                 //glider: use slide pot for air brakes
-                gameController.data.Rz = scale<uint16_t, uint16_t>(0, Max12Bit, throttleFilter.getMedian(), -Max15Bit, Max15Bit);
+                gameController.data.Rz = scale<float, int16_t>(0, 1.0f, throttleFiltered, -Max15Bit, Max15Bit);
                 gameController.data.slider = 0;
             }
             else
             {
                 //anything but a glider - use slide pot for throttle
-                gameController.data.slider = scale<uint16_t, uint16_t>(0, Max12Bit, throttleFilter.getMedian(), 0, Max15Bit);
+                gameController.data.slider = scale<float, uint16_t>(0, 1.0f, throttleFiltered, 0, Max15Bit);
                 gameController.data.Rz = 0;
             }
-            gameController.data.dial = scale<uint16_t, uint16_t>(0, Max12Bit, propellerFilter.getMedian(), 0, Max15Bit);
-            gameController.data.Z = scale<uint16_t, int16_t>(0, Max12Bit, mixtureFilter.getMedian(), -Max15Bit, Max15Bit);
-            gameController.data.Rx = scale<uint16_t, int16_t>(0, Max12Bit, adcConvBuffer[miniJoyX], 0, Max15Bit);
-            gameController.data.Ry = scale<uint16_t, int16_t>(0, Max12Bit, adcConvBuffer[miniJoyY], 0, Max15Bit);
+            gameController.data.dial = scale<float, uint16_t>(0, 1.0f, propellerFiltered, 0, Max15Bit);
+            gameController.data.Z = scale<float, int16_t>(0, 1.0f, mixtureFiltered, -Max15Bit, Max15Bit);
+            gameController.data.Rx = scale<float, uint16_t>(0, 1.0f, miniJoyXFiltered, 0, Max15Bit);
+            gameController.data.Ry = scale<float, uint16_t>(0, 1.0f, miniJoyYFiltered, 0, Max15Bit);
 
             //set game controller buttons
             gameController.data.buttons = 0;
@@ -209,6 +209,7 @@ void mainLoop()
 #ifdef MONITOR
 
 #endif  //MONITOR
+            HAL_GPIO_WritePin(TEST3_GPIO_Port, TEST3_Pin, GPIO_PIN_RESET);	//XXX test
         }
 
         //handle display actions
