@@ -32,7 +32,7 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 77,
+				"line" : 76,
 				"parent" : 0
 			},
 			{
@@ -118,6 +118,7 @@
 			"sourceIndexes" : 
 			[
 				0,
+				9,
 				10,
 				11,
 				12,
@@ -153,8 +154,7 @@
 				42,
 				43,
 				44,
-				45,
-				46
+				45
 			]
 		},
 		{
@@ -236,8 +236,7 @@
 				5,
 				6,
 				7,
-				8,
-				9
+				8
 			]
 		},
 		{
@@ -304,7 +303,7 @@
 			"language" : "ASM",
 			"sourceIndexes" : 
 			[
-				47
+				46
 			]
 		}
 	],
@@ -382,15 +381,14 @@
 				42,
 				43,
 				44,
-				45,
-				46
+				45
 			]
 		},
 		{
 			"name" : "",
 			"sourceIndexes" : 
 			[
-				47
+				46
 			]
 		}
 	],
@@ -448,12 +446,6 @@
 			"backtrace" : 3,
 			"compileGroupIndex" : 1,
 			"path" : "Core/Src/sh1106.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 3,
-			"compileGroupIndex" : 1,
-			"path" : "Core/Src/status.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{

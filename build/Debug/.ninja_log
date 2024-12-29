@@ -42,13 +42,13 @@
 279	725	7571886501472629	CMakeFiles/uTQ.dir/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.c.obj	20214cec551d979
 5	157	7571919234865355	CMakeFiles/uTQ.dir/Core/Src/timer.cpp.obj	9957695cb0e74c3c
 24	182	7571922647919566	CMakeFiles/uTQ.dir/Core/Src/rotary_encoder.cpp.obj	85dbd68bb248fc2f
-6	466	7571969046630088	CMakeFiles/uTQ.dir/Core/Src/main_loop.cpp.obj	50888ae300fe2041
+5	467	7571972818940495	CMakeFiles/uTQ.dir/Core/Src/main_loop.cpp.obj	50888ae300fe2041
 21	187	7571922647878060	CMakeFiles/uTQ.dir/Core/Src/push_button.cpp.obj	eeb70b78b58cebb3
 33	445	7571922648001267	CMakeFiles/uTQ.dir/Core/Src/status.cpp.obj	479c5ec89df97fb7
 10	383	7571922647780597	CMakeFiles/uTQ.dir/Core/Src/display.cpp.obj	38c0d6a39ff19e0d
 14	393	7571922647814176	CMakeFiles/uTQ.dir/Core/Src/info_window.cpp.obj	38e9667a87f15c77
 29	470	7571922647959943	CMakeFiles/uTQ.dir/Core/Src/sh1106.cpp.obj	e41febf9062c50d7
 9	568	7571925112899735	CMakeFiles/uTQ.dir/Core/Src/logger.cpp.obj	fc5012daf43b17d0
-467	720	7571969051236906	uTQ.elf	165dee1c3c62a1ae
-5	467	7571972818940495	CMakeFiles/uTQ.dir/Core/Src/main_loop.cpp.obj	50888ae300fe2041
 467	723	7571972823565852	uTQ.elf	77d1541a8d92dda0
+6	463	7571976477916739	CMakeFiles/uTQ.dir/Core/Src/main_loop.cpp.obj	50888ae300fe2041
+464	719	7571976482497668	uTQ.elf	463338ca23627eca

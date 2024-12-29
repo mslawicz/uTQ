@@ -15,7 +15,6 @@
 #include "logger.h"
 #include "sh1106.h"
 #include "push_button.h"
-#include "status.h"
 
 ADC_HandleTypeDef* pHadc;    //pointer to ADC object
 SPI_HandleTypeDef* pHspi2;   //pointer to SPI2 object
@@ -59,9 +58,6 @@ void mainLoop()
     Timer pilotsTimer;
     pilotsTimer.reset();
 
-    //Status object
-    Status status(pDisplay);
-
     /* main forever loop */
     while(true)
     {
@@ -93,8 +89,7 @@ void mainLoop()
         //process thrust reverser button
         //activate reverser on button press when throttle is idle
         //deactivate reverser automatically when throttle is idle again
-        if((status.getAircraftType() == AircraftType::Engine) &&
-           (reverseOn == false) &&      //reverser is off
+        if((reverseOn == false) &&      //reverser is off
            (HAL_GPIO_ReadPin(PB_RED_GPIO_Port, PB_RED_Pin) == GPIO_PinState::GPIO_PIN_RESET) &&       //reverse button is pressed
            (throttleFiltered < ADC10Pct))     //throttle is < 10%
         {
@@ -123,18 +118,8 @@ void mainLoop()
         if(gameCtrlTimer.hasElapsed(GameController::ReportInterval))
         {
             //set game controller axes
-            if(status.getAircraftType() == AircraftType::Glider)
-            {
-                //glider: use slide pot for air brakes
-                gameController.data.Rz = scale<float, int16_t>(0, 1.0f, throttleFiltered, -Max15Bit, Max15Bit);
-                gameController.data.slider = 0;
-            }
-            else
-            {
-                //anything but a glider - use slide pot for throttle
-                gameController.data.slider = scale<float, uint16_t>(0, 1.0f, throttleFiltered, 0, Max15Bit);
-                gameController.data.Rz = 0;
-            }
+            gameController.data.slider = scale<float, uint16_t>(0, 1.0f, throttleFiltered, 0, Max15Bit);
+            gameController.data.Rz = 0;
             gameController.data.dial = scale<float, uint16_t>(0, 1.0f, propellerFiltered, 0, Max15Bit);
             gameController.data.Z = scale<float, int16_t>(0, 1.0f, mixtureFiltered, -Max15Bit, Max15Bit);
             gameController.data.Rx = scale<float, uint16_t>(0.05f, 1.0f, brakeLeft, 0, Max15Bit);
@@ -151,15 +136,7 @@ void mainLoop()
             gameController.setButton(GameControllerButton::leftToggle, HAL_GPIO_ReadPin(TOGGLE_LEFT_GPIO_Port, TOGGLE_LEFT_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             gameController.setButton(GameControllerButton::rightToggle, HAL_GPIO_ReadPin(TOGGLE_RIGHT_GPIO_Port, TOGGLE_RIGHT_Pin) == GPIO_PinState::GPIO_PIN_RESET);
 
-            if(status.getAircraftType() == AircraftType::Glider)
-            {
-                gameController.setButton(GameControllerButton::towRelease, HAL_GPIO_ReadPin(PB_GREEN_GPIO_Port, PB_GREEN_Pin) == GPIO_PinState::GPIO_PIN_RESET);
-            }
-            else
-            {
-                //not a glider
-                gameController.setButton(GameControllerButton::greenButton, HAL_GPIO_ReadPin(PB_GREEN_GPIO_Port, PB_GREEN_Pin) == GPIO_PinState::GPIO_PIN_RESET);
-            }
+            gameController.setButton(GameControllerButton::greenButton, HAL_GPIO_ReadPin(PB_GREEN_GPIO_Port, PB_GREEN_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             gameController.setButton(GameControllerButton::miniJoyPB, HAL_GPIO_ReadPin(MINI_JOY_PB_GPIO_Port, MINI_JOY_PB_Pin) == GPIO_PinState::GPIO_PIN_RESET);
 
             // unused data members
@@ -175,12 +152,6 @@ void mainLoop()
         if(pDisplay != nullptr)
         {
             pDisplay->handler();
-        }
-
-        if(pDisplay->isOn())
-        {
-            //handle status
-            status.handler();
         }
     }
 }

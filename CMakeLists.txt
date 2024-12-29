@@ -60,7 +60,6 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/Src/push_button.cpp
     Core/Src/rotary_encoder.cpp
     Core/Src/sh1106.cpp
-    Core/Src/status.cpp
 )
 
 # Add include paths
