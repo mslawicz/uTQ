@@ -153,8 +153,7 @@
 				39,
 				40,
 				41,
-				42,
-				43
+				42
 			]
 		},
 		{
@@ -301,7 +300,7 @@
 			"language" : "ASM",
 			"sourceIndexes" : 
 			[
-				44
+				43
 			]
 		}
 	],
@@ -376,15 +375,14 @@
 				39,
 				40,
 				41,
-				42,
-				43
+				42
 			]
 		},
 		{
 			"name" : "",
 			"sourceIndexes" : 
 			[
-				44
+				43
 			]
 		}
 	],
@@ -586,12 +584,6 @@
 			"backtrace" : 2,
 			"compileGroupIndex" : 0,
 			"path" : "Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_adc.c",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 2,
-			"compileGroupIndex" : 0,
-			"path" : "Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c",
 			"sourceGroupIndex" : 0
 		},
 		{

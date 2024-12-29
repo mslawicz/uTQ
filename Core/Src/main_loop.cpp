@@ -16,7 +16,6 @@
 #include "push_button.h"
 
 ADC_HandleTypeDef* pHadc;    //pointer to ADC object
-SPI_HandleTypeDef* pHspi2;   //pointer to SPI2 object
 uint16_t adcConvBuffer[MAX_ADC_CH]; //buffer for ADC conversion results
 bool adcDataReady = true;
 static float throttleFiltered = 0;
@@ -161,15 +160,3 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     }
 }
 
-/**
-  * @brief  Tx Transfer completed callback.
-  * @param  hspi pointer to a SPI_HandleTypeDef structure that contains
-  *               the configuration information for SPI module.
-  * @retval None
-  */
-void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
-{
-    if(hspi == pHspi2)
-    {
-    }
-}

@@ -17,7 +17,6 @@
 
 extern TIM_HandleTypeDef* pTimerHtim;  //pointer to htim object instance used by Timer class
 extern ADC_HandleTypeDef* pHadc;    //pointer to ADC object
-extern SPI_HandleTypeDef* pHspi2;   //pointer to SPI2 object
 extern bool adcDataReady;
 
 #ifdef __cplusplus

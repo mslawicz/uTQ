@@ -20,6 +20,8 @@ void redirectStdio(UART_HandleTypeDef* pUart)
 
 int _read(int file, char *ptr, int len) /* @suppress("Name convention for function") */
 {
+    UNUSED(file);
+    UNUSED(len);
     if(NULL == pConsole)
     {
         return 0;
@@ -34,6 +36,8 @@ int _read(int file, char *ptr, int len) /* @suppress("Name convention for functi
 
 int _write(int file, char *ptr, int len) /* @suppress("Name convention for function") */
 {
+    UNUSED(file);
+    UNUSED(len);    
     if(NULL == pConsole)
     {
         return 0;
