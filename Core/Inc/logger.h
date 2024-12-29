@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <cstdint>
 
 
 enum struct LogLevel : uint8_t
