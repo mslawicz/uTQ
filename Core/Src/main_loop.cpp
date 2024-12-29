@@ -14,7 +14,6 @@
 #include "constant.h"
 #include "logger.h"
 #include "sh1106.h"
-#include "menu.h"
 #include "push_button.h"
 #include "info_window.h"
 #include "status.h"
@@ -36,7 +35,6 @@ void mainLoop()
     constexpr uint32_t AdcPeriod = GameController::ReportInterval / 10;
     bool reverseOn = false;     //state of thrust reverser
     bool reverseOffArmed = false;    //automatic reverse off flag
-    uint8_t lastMenuItemIdx = 0xFF; //remembers the previous menu item index
     Timer statusLedTimer;
     Timer gameCtrlTimer;
     Timer adcTimer;
@@ -51,13 +49,6 @@ void mainLoop()
     GameController gameController;  //USB link-to-PC object (class custom HID - joystick)
 
     pDisplay = new SH1106(pHspi2, DIS_CS_GPIO_Port, DIS_CS_Pin, DIS_DC_GPIO_Port, DIS_DC_Pin, DIS_RESET_GPIO_Port, DIS_RESET_Pin);     //OLED display
-
-    //display menu
-    Menu menu(pDisplay);
-    menu.registerItem(MenuId::Timer, "%Reset timer");
-    menu.registerItem(MenuId::AircraftType, "$Aircraft type");
-    menu.registerItem(MenuId::Heading, "$HDG %AP");
-    menu.registerItem(MenuId::Altitude, "$ALT #VS %AP");
 
     //pushbutton objects
     PushButton menuLeft(HAT_SET_GPIO_Port, HAT_SET_Pin);
@@ -166,20 +157,7 @@ void mainLoop()
             gameController.setButton(GameControllerButton::blueButton, HAL_GPIO_ReadPin(PB_BLUE_GPIO_Port, PB_BLUE_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             gameController.setButton(GameControllerButton::leftToggle, HAL_GPIO_ReadPin(TOGGLE_LEFT_GPIO_Port, TOGGLE_LEFT_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             gameController.setButton(GameControllerButton::rightToggle, HAL_GPIO_ReadPin(TOGGLE_RIGHT_GPIO_Port, TOGGLE_RIGHT_Pin) == GPIO_PinState::GPIO_PIN_RESET);
-            if(menu.getItemId() == MenuId::Heading)
-            {
-                gameController.setButton(GameControllerButton::headingDec, HAL_GPIO_ReadPin(HAT_LEFT_GPIO_Port, HAT_LEFT_Pin) == GPIO_PinState::GPIO_PIN_RESET);   //dec heading
-                gameController.setButton(GameControllerButton::headingInc, HAL_GPIO_ReadPin(HAT_RIGHT_GPIO_Port, HAT_RIGHT_Pin) == GPIO_PinState::GPIO_PIN_RESET);  //inc heading
-                gameController.setButton(GameControllerButton::apHeading, HAL_GPIO_ReadPin(HAT_MID_GPIO_Port, HAT_MID_Pin) == GPIO_PinState::GPIO_PIN_RESET);  //AP heading mode
-            }
-            if(menu.getItemId() == MenuId::Altitude)
-            {
-                gameController.setButton(GameControllerButton::altitudeDec, HAL_GPIO_ReadPin(HAT_LEFT_GPIO_Port, HAT_LEFT_Pin) == GPIO_PinState::GPIO_PIN_RESET);   //dec altitude
-                gameController.setButton(GameControllerButton::altitudeInc, HAL_GPIO_ReadPin(HAT_RIGHT_GPIO_Port, HAT_RIGHT_Pin) == GPIO_PinState::GPIO_PIN_RESET);  //inc altitude
-                gameController.setButton(GameControllerButton::vsDec, HAL_GPIO_ReadPin(HAT_UP_GPIO_Port, HAT_UP_Pin) == GPIO_PinState::GPIO_PIN_RESET);   //dec vs
-                gameController.setButton(GameControllerButton::vsInc, HAL_GPIO_ReadPin(HAT_DOWN_GPIO_Port, HAT_DOWN_Pin) == GPIO_PinState::GPIO_PIN_RESET);  //inc vs
-                gameController.setButton(GameControllerButton::apVs, HAL_GPIO_ReadPin(HAT_MID_GPIO_Port, HAT_MID_Pin) == GPIO_PinState::GPIO_PIN_RESET);  //AP vs mode
-            }
+
             if(status.getAircraftType() == AircraftType::Glider)
             {
                 gameController.setButton(GameControllerButton::towRelease, HAL_GPIO_ReadPin(PB_GREEN_GPIO_Port, PB_GREEN_Pin) == GPIO_PinState::GPIO_PIN_RESET);
@@ -206,47 +184,8 @@ void mainLoop()
             pDisplay->handler();
         }
 
-        //handle menu change
-        if(menuLeft.hasBeenPressed())
-        {
-            menu.decItem();
-        }
-        if(menuRight.hasBeenPressed())
-        {
-            menu.incItem();
-        }
-
-        //pilots timer reset
-        if((menu.getItemId() == MenuId::Timer) &&
-           (hatMid.hasBeenPressed()))
-        {
-            infoData.timerResetRequest = true;
-        }
-
-        //handle aircraft type change
-        if(menu.getItemId() == MenuId::AircraftType)
-        {
-            if(hatLeft.hasBeenPressed())
-            {
-                status.changeAircraftType(-1);
-            }
-
-            if(hatRight.hasBeenPressed())
-            {
-                status.changeAircraftType(1);
-            }
-        }
-
         if(pDisplay->isOn())
         {
-
-            //print new menu item
-            if(menu.getItemIdx() != lastMenuItemIdx)
-            {
-                lastMenuItemIdx = menu.getItemIdx();
-                menu.display();
-            }
-
             //display info window
             infoWindow.handler(infoData);
 

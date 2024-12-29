@@ -53,7 +53,6 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
     Core/Src/stdio_redirection.c
     Core/Src/main_loop.cpp
-    Core/Src/menu.cpp
     Core/Src/timer.cpp
     Core/Src/logger.cpp
     Core/Src/display.cpp

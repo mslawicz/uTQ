@@ -32,7 +32,7 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 79,
+				"line" : 78,
 				"parent" : 0
 			},
 			{
@@ -118,6 +118,7 @@
 			"sourceIndexes" : 
 			[
 				0,
+				11,
 				12,
 				13,
 				14,
@@ -153,8 +154,7 @@
 				44,
 				45,
 				46,
-				47,
-				48
+				47
 			]
 		},
 		{
@@ -238,8 +238,7 @@
 				7,
 				8,
 				9,
-				10,
-				11
+				10
 			]
 		},
 		{
@@ -306,7 +305,7 @@
 			"language" : "ASM",
 			"sourceIndexes" : 
 			[
-				49
+				48
 			]
 		}
 	],
@@ -386,15 +385,14 @@
 				44,
 				45,
 				46,
-				47,
-				48
+				47
 			]
 		},
 		{
 			"name" : "",
 			"sourceIndexes" : 
 			[
-				49
+				48
 			]
 		}
 	],
@@ -410,12 +408,6 @@
 			"backtrace" : 3,
 			"compileGroupIndex" : 1,
 			"path" : "Core/Src/main_loop.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 3,
-			"compileGroupIndex" : 1,
-			"path" : "Core/Src/menu.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
