@@ -13,7 +13,6 @@
 #include "convert.h"
 #include "constant.h"
 #include "logger.h"
-#include "monitor.h"
 #include "sh1106.h"
 #include "menu.h"
 #include "push_button.h"
@@ -30,10 +29,6 @@ static float propellerFiltered = 0;
 static float mixtureFiltered = 0;
 static float miniJoyXFiltered = 0;
 static float miniJoyYFiltered = 0;
-
-#ifdef MONITOR
-uint16_t mon_adc[MAX_ADC_CH];
-#endif
 
 void mainLoop()
 {
@@ -88,10 +83,6 @@ void mainLoop()
         if(adcDataReady && adcTimer.hasElapsed(AdcPeriod))
         {
             adcDataReady = false;
-
-#ifdef MONITOR
-            memcpy(mon_adc, adcConvBuffer, MAX_ADC_CH);
-#endif //MONITOR
 
             //filter ADC data
             throttleFiltered += AlphaEMA * (1.0f - static_cast<float>(adcConvBuffer[throttle]) / Max12BitF - throttleFiltered);
@@ -207,10 +198,6 @@ void mainLoop()
 
             gameController.sendReport();
             gameCtrlTimer.reset();
-
-#ifdef MONITOR
-
-#endif  //MONITOR
         }
 
         //handle display actions

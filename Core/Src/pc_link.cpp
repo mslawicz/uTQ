@@ -9,9 +9,6 @@
 #include "pc_link.h"
 #include <vector>
 
-#ifdef MONITOR
-#endif
-
 void GameController::sendReport()
 {
 #ifdef GAME_CONTROLLER_TEST
