@@ -32,7 +32,7 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 76,
+				"line" : 74,
 				"parent" : 0
 			},
 			{
@@ -118,6 +118,8 @@
 			"sourceIndexes" : 
 			[
 				0,
+				7,
+				8,
 				9,
 				10,
 				11,
@@ -152,9 +154,7 @@
 				40,
 				41,
 				42,
-				43,
-				44,
-				45
+				43
 			]
 		},
 		{
@@ -234,9 +234,7 @@
 				3,
 				4,
 				5,
-				6,
-				7,
-				8
+				6
 			]
 		},
 		{
@@ -303,7 +301,7 @@
 			"language" : "ASM",
 			"sourceIndexes" : 
 			[
-				46
+				44
 			]
 		}
 	],
@@ -379,16 +377,14 @@
 				40,
 				41,
 				42,
-				43,
-				44,
-				45
+				43
 			]
 		},
 		{
 			"name" : "",
 			"sourceIndexes" : 
 			[
-				46
+				44
 			]
 		}
 	],
@@ -421,12 +417,6 @@
 		{
 			"backtrace" : 3,
 			"compileGroupIndex" : 1,
-			"path" : "Core/Src/display.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 3,
-			"compileGroupIndex" : 1,
 			"path" : "Core/Src/pc_link.cpp",
 			"sourceGroupIndex" : 0
 		},
@@ -440,12 +430,6 @@
 			"backtrace" : 3,
 			"compileGroupIndex" : 1,
 			"path" : "Core/Src/rotary_encoder.cpp",
-			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 3,
-			"compileGroupIndex" : 1,
-			"path" : "Core/Src/sh1106.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{

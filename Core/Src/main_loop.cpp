@@ -13,14 +13,12 @@
 #include "convert.h"
 #include "constant.h"
 #include "logger.h"
-#include "sh1106.h"
 #include "push_button.h"
 
 ADC_HandleTypeDef* pHadc;    //pointer to ADC object
 SPI_HandleTypeDef* pHspi2;   //pointer to SPI2 object
 uint16_t adcConvBuffer[MAX_ADC_CH]; //buffer for ADC conversion results
 bool adcDataReady = true;
-Display* pDisplay = nullptr;
 static float throttleFiltered = 0;
 static float propellerFiltered = 0;
 static float mixtureFiltered = 0;
@@ -45,8 +43,6 @@ void mainLoop()
     uint16_t heartbeatLedPin = LD2_Pin;
 
     GameController gameController;  //USB link-to-PC object (class custom HID - joystick)
-
-    pDisplay = new SH1106(pHspi2, DIS_CS_GPIO_Port, DIS_CS_Pin, DIS_DC_GPIO_Port, DIS_DC_Pin, DIS_RESET_GPIO_Port, DIS_RESET_Pin);     //OLED display
 
     //pushbutton objects
     PushButton menuLeft(HAT_SET_GPIO_Port, HAT_SET_Pin);
@@ -147,12 +143,6 @@ void mainLoop()
             gameController.sendReport();
             gameCtrlTimer.reset();
         }
-
-        //handle display actions
-        if(pDisplay != nullptr)
-        {
-            pDisplay->handler();
-        }
     }
 }
 
@@ -181,9 +171,5 @@ void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
 {
     if(hspi == pHspi2)
     {
-        if(pDisplay != nullptr)
-        {
-            pDisplay->freeBus();
-        }
     }
 }

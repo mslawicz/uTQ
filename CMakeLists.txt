@@ -55,11 +55,9 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/Src/main_loop.cpp
     Core/Src/timer.cpp
     Core/Src/logger.cpp
-    Core/Src/display.cpp
     Core/Src/pc_link.cpp
     Core/Src/push_button.cpp
     Core/Src/rotary_encoder.cpp
-    Core/Src/sh1106.cpp
 )
 
 # Add include paths
