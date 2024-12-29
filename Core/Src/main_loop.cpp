@@ -15,7 +15,6 @@
 #include "logger.h"
 #include "sh1106.h"
 #include "push_button.h"
-#include "info_window.h"
 #include "status.h"
 
 ADC_HandleTypeDef* pHadc;    //pointer to ADC object
@@ -57,12 +56,8 @@ void mainLoop()
     PushButton hatRight(HAT_RIGHT_GPIO_Port, HAT_RIGHT_Pin);
     PushButton hatMid(HAT_MID_GPIO_Port, HAT_MID_Pin);
 
-    //info window object and data structure
-    InfoWindow infoWindow(pDisplay);
     Timer pilotsTimer;
     pilotsTimer.reset();
-    InfoMode mainInfoMode{InfoMode::Timer};
-    InfoData infoData = {mainInfoMode, false};
 
     //Status object
     Status status(pDisplay);
@@ -105,7 +100,6 @@ void mainLoop()
         {
             reverseOn = true;
             reverseOffArmed = false;
-            infoData.mode = InfoMode::Reverser;
         }
         if((reverseOn == true) &&   //reverser is on
            (throttleFiltered > ADC20Pct))     //throttle > 20%
@@ -117,7 +111,6 @@ void mainLoop()
         {
             reverseOn = false;
             reverseOffArmed = false;
-            infoData.mode = mainInfoMode;
         }
 
         //process linear brakes
@@ -186,9 +179,6 @@ void mainLoop()
 
         if(pDisplay->isOn())
         {
-            //display info window
-            infoWindow.handler(infoData);
-
             //handle status
             status.handler();
         }

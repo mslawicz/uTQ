@@ -56,7 +56,6 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/Src/timer.cpp
     Core/Src/logger.cpp
     Core/Src/display.cpp
-    Core/Src/info_window.cpp
     Core/Src/pc_link.cpp
     Core/Src/push_button.cpp
     Core/Src/rotary_encoder.cpp
