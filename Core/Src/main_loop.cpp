@@ -35,20 +35,13 @@ void mainLoop()
     Timer adcTimer;
 
     Timer::start(pTimerHtim);
-    LOG_ALWAYS("micro TQ v1.0");
+    LOG_ALWAYS("micro TQ v2.0");
 
     //assign system LEDs
     GPIO_TypeDef* heartbeatLedPort = LD2_GPIO_Port; //green LED
     uint16_t heartbeatLedPin = LD2_Pin;
 
     GameController gameController;  //USB link-to-PC object (class custom HID - joystick)
-
-    //pushbutton objects
-    PushButton menuLeft(HAT_SET_GPIO_Port, HAT_SET_Pin);
-    PushButton menuRight(HAT_RST_GPIO_Port, HAT_RST_Pin);
-    PushButton hatLeft(HAT_LEFT_GPIO_Port, HAT_LEFT_Pin);
-    PushButton hatRight(HAT_RIGHT_GPIO_Port, HAT_RIGHT_Pin);
-    PushButton hatMid(HAT_MID_GPIO_Port, HAT_MID_Pin);
 
     Timer pilotsTimer;
     pilotsTimer.reset();
@@ -130,9 +123,8 @@ void mainLoop()
             gameController.setButton(GameControllerButton::blueButton, HAL_GPIO_ReadPin(PB_BLUE_GPIO_Port, PB_BLUE_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             gameController.setButton(GameControllerButton::leftToggle, HAL_GPIO_ReadPin(TOGGLE_LEFT_GPIO_Port, TOGGLE_LEFT_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             gameController.setButton(GameControllerButton::rightToggle, HAL_GPIO_ReadPin(TOGGLE_RIGHT_GPIO_Port, TOGGLE_RIGHT_Pin) == GPIO_PinState::GPIO_PIN_RESET);
-
             gameController.setButton(GameControllerButton::greenButton, HAL_GPIO_ReadPin(PB_GREEN_GPIO_Port, PB_GREEN_Pin) == GPIO_PinState::GPIO_PIN_RESET);
-            gameController.setButton(GameControllerButton::miniJoyPB, HAL_GPIO_ReadPin(MINI_JOY_PB_GPIO_Port, MINI_JOY_PB_Pin) == GPIO_PinState::GPIO_PIN_RESET);
+
 
             // unused data members
             gameController.data.X = 0;

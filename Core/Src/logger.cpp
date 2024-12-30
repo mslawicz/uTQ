@@ -42,7 +42,6 @@ void logMessage(LogLevel level, std::ostream& ostr, bool once)
         std::cout << "\r[" << us / UsInSec << "." << std::setfill('0') << std::setw(UsDigits) << us % UsInSec << "] ";
         std::cout << levelText[levelValue] << ": ";
         std::cout << message << "\r\n";
-        std::cout << ">" << std::flush;
     }
 }
 
