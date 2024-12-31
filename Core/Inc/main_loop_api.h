@@ -18,6 +18,7 @@
 extern TIM_HandleTypeDef* pTimerHtim;  //pointer to htim object instance used by Timer class
 extern ADC_HandleTypeDef* pHadc;    //pointer to ADC object
 extern bool adcDataReady;
+extern IWDG_HandleTypeDef* pIwdg;    //pointer to watchdog handler
 
 #ifdef __cplusplus
 extern "C"

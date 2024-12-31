@@ -18,6 +18,7 @@
 
 #define VAR_MONITOR 1
 
+IWDG_HandleTypeDef* pIwdg;       //pointer to watchdog handler
 ADC_HandleTypeDef* pHadc;    //pointer to ADC object
 uint16_t adcConvBuffer[MAX_ADC_CH]; //buffer for ADC conversion results
 bool adcDataReady = true;
@@ -38,6 +39,7 @@ void mainLoop()
     Timer gameCtrlTimer;
     Timer adcTimer;
 
+    HAL_IWDG_Refresh(pIwdg);
     Timer::start(pTimerHtim);
     LOG_ALWAYS("micro TQ v2.0");
 
@@ -93,6 +95,7 @@ void mainLoop()
         {
             HAL_GPIO_TogglePin(heartbeatLedPort, heartbeatLedPin);
             statusLedTimer.reset();
+            HAL_IWDG_Refresh(pIwdg);
         }
 
         //process thrust reverser button
