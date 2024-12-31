@@ -17,7 +17,7 @@ class MedianFilter
 {
 public:
     MedianFilter();
-    void filter(T newValue);
+    void perform(T newValue);
     T getMedian() const { return _sortedBuffer[MED_FLT_SIZE / 2]; }
 private:
     std::array<T, MED_FLT_SIZE> _unsortedBuffer;
@@ -33,7 +33,7 @@ inline MedianFilter<T>::MedianFilter()
 }
 
 template<class T>
-inline void MedianFilter<T>::filter(T newValue)
+inline void MedianFilter<T>::perform(T newValue)
 {
     //store the new value in the circular (unsorted) buffer
     T oldestValue = _unsortedBuffer[_currentIndex];

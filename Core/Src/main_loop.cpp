@@ -13,6 +13,7 @@
 #include "convert.h"
 #include "constant.h"
 #include "logger.h"
+#include "median_filter.h"
 #include "push_button.h"
 
 #define VAR_MONITOR 1
@@ -46,6 +47,11 @@ void mainLoop()
 
     GameController gameController;  //USB link-to-PC object (class custom HID - joystick)
 
+    //ADC filter objects
+    MedianFilter<uint16_t> medianFilterThrottle;
+    MedianFilter<uint16_t> medianFilterPropeller;
+    MedianFilter<uint16_t> medianFilterMixture;
+
     Timer pilotsTimer;
     pilotsTimer.reset();
 
@@ -58,15 +64,22 @@ void mainLoop()
             adcDataReady = false;
 
             //filter ADC data
-            throttleFiltered += AlphaEMA * (1.0f - static_cast<float>(adcConvBuffer[throttle]) / Max12BitF - throttleFiltered);
-            propellerFiltered += AlphaEMA * (static_cast<float>(adcConvBuffer[propeller]) / Max12BitF - propellerFiltered);
-            mixtureFiltered += AlphaEMA * (static_cast<float>(adcConvBuffer[mixture]) / Max12BitF - mixtureFiltered);
+            medianFilterThrottle.perform(Max12Bit - adcConvBuffer[AdcCh::throttle]);
+            throttleFiltered += AlphaEMA * (static_cast<float>(medianFilterThrottle.getMedian()) / Max12BitF - throttleFiltered);
+            medianFilterPropeller.perform(adcConvBuffer[AdcCh::propeller]);
+            propellerFiltered += AlphaEMA * (static_cast<float>(medianFilterPropeller.getMedian()) / Max12BitF - propellerFiltered);
+            medianFilterMixture.perform(adcConvBuffer[AdcCh::mixture]);
+            mixtureFiltered += AlphaEMA * (static_cast<float>(medianFilterMixture.getMedian()) / Max12BitF - mixtureFiltered);
 
             //optional monitoring
 #if VAR_MONITOR
-            g_mon[0] = adcConvBuffer[throttle];
+            g_mon[0] = Max12Bit - adcConvBuffer[throttle];
             g_mon[1] = adcConvBuffer[mixture];
             g_mon[2] = adcConvBuffer[propeller];
+
+            g_mon[3] = throttleFiltered * 4096;
+            g_mon[4] = mixtureFiltered * 4096;
+            g_mon[5] = propellerFiltered * 4096;
 #endif            
 
             /* request next conversions of analog channels */
