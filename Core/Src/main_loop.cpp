@@ -15,12 +15,17 @@
 #include "logger.h"
 #include "push_button.h"
 
+#define VAR_MONITOR 1
+
 ADC_HandleTypeDef* pHadc;    //pointer to ADC object
 uint16_t adcConvBuffer[MAX_ADC_CH]; //buffer for ADC conversion results
 bool adcDataReady = true;
 static float throttleFiltered = 0;
 static float propellerFiltered = 0;
 static float mixtureFiltered = 0;
+#if VAR_MONITOR
+int32_t g_mon[10];
+#endif
 
 void mainLoop()
 {
@@ -56,6 +61,13 @@ void mainLoop()
             throttleFiltered += AlphaEMA * (1.0f - static_cast<float>(adcConvBuffer[throttle]) / Max12BitF - throttleFiltered);
             propellerFiltered += AlphaEMA * (static_cast<float>(adcConvBuffer[propeller]) / Max12BitF - propellerFiltered);
             mixtureFiltered += AlphaEMA * (static_cast<float>(adcConvBuffer[mixture]) / Max12BitF - mixtureFiltered);
+
+            //optional monitoring
+#if VAR_MONITOR
+            g_mon[0] = adcConvBuffer[throttle];
+            g_mon[0] = adcConvBuffer[mixture];
+            g_mon[0] = adcConvBuffer[propeller];
+#endif            
 
             /* request next conversions of analog channels */
             HAL_ADC_Start_DMA(pHadc, (uint32_t*)adcConvBuffer, pHadc->Init.NbrOfConversion);
