@@ -65,8 +65,8 @@ void mainLoop()
             //optional monitoring
 #if VAR_MONITOR
             g_mon[0] = adcConvBuffer[throttle];
-            g_mon[0] = adcConvBuffer[mixture];
-            g_mon[0] = adcConvBuffer[propeller];
+            g_mon[1] = adcConvBuffer[mixture];
+            g_mon[2] = adcConvBuffer[propeller];
 #endif            
 
             /* request next conversions of analog channels */
