@@ -21,8 +21,6 @@ bool adcDataReady = true;
 static float throttleFiltered = 0;
 static float propellerFiltered = 0;
 static float mixtureFiltered = 0;
-static float miniJoyXFiltered = 0;
-static float miniJoyYFiltered = 0;
 
 void mainLoop()
 {
@@ -58,8 +56,6 @@ void mainLoop()
             throttleFiltered += AlphaEMA * (1.0f - static_cast<float>(adcConvBuffer[throttle]) / Max12BitF - throttleFiltered);
             propellerFiltered += AlphaEMA * (static_cast<float>(adcConvBuffer[propeller]) / Max12BitF - propellerFiltered);
             mixtureFiltered += AlphaEMA * (static_cast<float>(adcConvBuffer[mixture]) / Max12BitF - mixtureFiltered);
-            miniJoyXFiltered += AlphaEMA * (static_cast<float>(adcConvBuffer[miniJoyX]) / Max12BitF - miniJoyXFiltered);
-            miniJoyYFiltered += AlphaEMA * (static_cast<float>(adcConvBuffer[miniJoyY]) / Max12BitF - miniJoyYFiltered);
 
             /* request next conversions of analog channels */
             HAL_ADC_Start_DMA(pHadc, (uint32_t*)adcConvBuffer, pHadc->Init.NbrOfConversion);
@@ -96,22 +92,13 @@ void mainLoop()
             reverseOffArmed = false;
         }
 
-        //process linear brakes
-        float brakeLeft = ((miniJoyXFiltered < 0.5f) ? 2.0f * (0.5f - miniJoyXFiltered) : 0) +		//mini joystick moved forward
-        						  ((miniJoyYFiltered > 0.5f) ? 2.0f * (miniJoyYFiltered - 0.5f) : 0);			//mini joystick moved to left
-        float brakeRight = ((miniJoyXFiltered < 0.5f) ? 2.0f * (0.5f - miniJoyXFiltered) : 0) +		//mini joystick moved forward
-        						  ((miniJoyYFiltered < 0.5f) ? 2.0f * (0.5f - miniJoyYFiltered) : 0);			//mini joystick moved to right
-
         //process USB reports
         if(gameCtrlTimer.hasElapsed(GameController::ReportInterval))
         {
             //set game controller axes
             gameController.data.slider = scale<float, uint16_t>(0, 1.0f, throttleFiltered, 0, Max15Bit);
-            gameController.data.Rz = 0;
             gameController.data.dial = scale<float, uint16_t>(0, 1.0f, propellerFiltered, 0, Max15Bit);
             gameController.data.Z = scale<float, int16_t>(0, 1.0f, mixtureFiltered, -Max15Bit, Max15Bit);
-            gameController.data.Rx = scale<float, uint16_t>(0.05f, 1.0f, brakeLeft, 0, Max15Bit);
-            gameController.data.Ry = scale<float, uint16_t>(0.05f, 1.0f, brakeRight, 0, Max15Bit);
 
             //set game controller buttons
             gameController.data.buttons = 0;
@@ -121,14 +108,17 @@ void mainLoop()
             gameController.setButton(GameControllerButton::gearUp, HAL_GPIO_ReadPin(GEAR_UP_GPIO_Port, GEAR_UP_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             gameController.setButton(GameControllerButton::gearDown, HAL_GPIO_ReadPin(GEAR_DOWN_GPIO_Port, GEAR_DOWN_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             gameController.setButton(GameControllerButton::blueButton, HAL_GPIO_ReadPin(PB_BLUE_GPIO_Port, PB_BLUE_Pin) == GPIO_PinState::GPIO_PIN_RESET);
+            gameController.setButton(GameControllerButton::greenButton, HAL_GPIO_ReadPin(PB_GREEN_GPIO_Port, PB_GREEN_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             gameController.setButton(GameControllerButton::leftToggle, HAL_GPIO_ReadPin(TOGGLE_LEFT_GPIO_Port, TOGGLE_LEFT_Pin) == GPIO_PinState::GPIO_PIN_RESET);
             gameController.setButton(GameControllerButton::rightToggle, HAL_GPIO_ReadPin(TOGGLE_RIGHT_GPIO_Port, TOGGLE_RIGHT_Pin) == GPIO_PinState::GPIO_PIN_RESET);
-            gameController.setButton(GameControllerButton::greenButton, HAL_GPIO_ReadPin(PB_GREEN_GPIO_Port, PB_GREEN_Pin) == GPIO_PinState::GPIO_PIN_RESET);
 
 
             // unused data members
             gameController.data.X = 0;
             gameController.data.Y = 0;
+            gameController.data.Rx = 0;
+            gameController.data.Ry = 0;
+            gameController.data.Rz = 0;
             gameController.data.hat = 0;
 
             gameController.sendReport();

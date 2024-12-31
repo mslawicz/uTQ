@@ -14,9 +14,7 @@ enum AdcCh
 {
     throttle,
     propeller,
-    mixture,
-	miniJoyX,
-	miniJoyY
+    mixture
 };
 
 #endif /* INC_MAIN_LOOP_H_ */

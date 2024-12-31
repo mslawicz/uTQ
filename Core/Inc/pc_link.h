@@ -18,7 +18,7 @@ struct GameControllerDataType
     int16_t X;
     int16_t Y;
     int16_t Z;          //mixture
-    int16_t Rz;			//spoilers (air brakes)
+    int16_t Rz;
     uint16_t Rx;
     uint16_t Ry;
     uint16_t slider;    //throttle
@@ -37,8 +37,7 @@ enum class GameControllerButton : uint8_t
     blueButton,
     greenButton,
     leftToggle,
-    rightToggle,
-    towRelease
+    rightToggle
 };
 
 class GameController
