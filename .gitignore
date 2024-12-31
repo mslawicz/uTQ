@@ -1,2 +1,5 @@
 /Debug/
 build
+CMakeFiles
+.cmake
+cmake
